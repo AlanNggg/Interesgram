@@ -1,0 +1,42 @@
+[
+    {
+        "_id": "1",
+        "name": "a",
+        "email": "a@gmail.com",
+        "password": "test123",
+        "avator": "avator.png",
+        "info": "This person is lazy"
+    },
+    {
+        "_id": "2",
+        "name": "b",
+        "email": "a@gmail.com",
+        "password": "test123",
+        "avator": "avator.png",
+        "info": "This person is lazy"
+    },
+    {
+        "_id": "3",
+        "name": "c",
+        "email": "a@gmail.com",
+        "password": "test123",
+        "avator": "avator.png",
+        "info": "This person is lazy"
+    },
+    {
+        "_id": "4",
+        "name": "d",
+        "email": "a@gmail.com",
+        "password": "test123",
+        "avator": "avator.png",
+        "info": "This person is lazy"
+    },
+    {
+        "_id": "4",
+        "name": "e",
+        "email": "a@gmail.com",
+        "password": "test123",
+        "avator": "avator.png",
+        "info": "This person is lazy"
+    }
+]

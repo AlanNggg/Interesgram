@@ -1,52 +1,15 @@
 const User = require("../models/userModel");
+const QueryFunctions = require("../utils/queryFunctions");
 
 exports.getAllUsers = async (req, res) => {
   try {
-    // name only
-    const queryObj = { ...req.query };
-    const excludedFields = ["page", "limit", "sort", "fields"];
+    const queryObj = new QueryFunctions(User.find(), req.query)
+      .filter(true)
+      .sort()
+      .select()
+      .paginate();
 
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    // using regex to search if a field contains that value
-    const modifiedQueryObj = Object.assign(
-      {},
-      // spread operator for array =>
-      ...Object.keys(queryObj).map((key) => {
-        const regex = new RegExp(queryObj[key], "i");
-        const el = {
-          [key]: {
-            $regex: regex,
-          },
-        };
-        return el;
-      })
-    );
-
-    let query = User.find(modifiedQueryObj);
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-
-    if (req.query.sort) {
-      // name
-      const sort = req.query.sort.replace(/,/g, " ");
-      query = query.sort(sort);
-    } else {
-      query = query.sort("-createdAt");
-    }
-
-    if (req.query.fields) {
-      // e.g. name, avator, info
-      const fields = req.query.fields.replace(/,/g, " ");
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v");
-    }
-
-    const users = await query;
+    const users = await queryObj.query;
 
     res.status(200).json({
       status: "success",

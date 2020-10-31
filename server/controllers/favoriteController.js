@@ -1,35 +1,16 @@
 const Favorite = require("../models/favoriteModel");
+const QueryFunctions = require("../utils/queryFunctions");
 
 exports.getAllFavorites = async (req, res) => {
   try {
     // post ID, user ID, createdAt
-    const queryObj = { ...req.query };
-    const excludedFields = ["page", "limit", "sort", "fields"];
+    const queryObj = new QueryFunctions(Favorite.find(), req.query)
+      .filter()
+      .sort()
+      .select()
+      .paginate();
 
-    let query = Favorite.find(queryObj);
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page - 1) * limit;
-
-    query.skip(skip).limit(limit);
-
-    if (req.query.sort) {
-      const sort = req.query.sort.replace(/,/g, " ");
-      query = query.sort(sort);
-    } else {
-      query = query.sort("-createdAt");
-    }
-
-    if (req.query.fields) {
-      // e.g. favorite post ID
-      const fields = req.query.fields.replace(/,/g, " ");
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v");
-    }
-
-    const favorites = await query;
+    const favorites = await queryObj.query;
 
     res.status(200).json({
       status: "success",

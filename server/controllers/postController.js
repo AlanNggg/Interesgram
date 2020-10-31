@@ -1,51 +1,16 @@
 const Post = require("../models/postModel");
+const QueryFunctions = require("../utils/queryFunctions");
 
 exports.getAllPosts = async (req, res) => {
   try {
     // author name, highest views, highest likes, createdAt
-    const queryObj = { ...req.query };
-    const excludedFields = ["page", "limit", "sort", "fields"];
+    const queryObj = new QueryFunctions(Post.find(), req.query)
+      .filter(true)
+      .sort()
+      .select()
+      .paginate();
 
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    const modifiedQueryObj = Object.assign(
-      {},
-      ...Object.keys(queryObj).map((key) => {
-        if (key === "userID") return { [key]: queryObj[key] };
-
-        const regex = new RegExp(queryObj[key], "i");
-        const el = {
-          [key]: {
-            $regex: regex,
-          },
-        };
-        return el;
-      })
-    );
-
-    let query = Post.find(modifiedQueryObj);
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-
-    if (req.query.sort) {
-      const sort = req.query.sort.replace(/,/g, " ");
-      query = query.sort(sort);
-    } else {
-      query = query.sort("-createdAt");
-    }
-
-    if (req.query.fields) {
-      // e.g. user ID, image, description
-      const fields = req.query.fields.replace(/,/g, " ");
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v");
-    }
-
-    const posts = await query;
+    const posts = await queryObj.query;
 
     res.status(200).json({
       status: "success",

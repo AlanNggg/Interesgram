@@ -1,0 +1,19 @@
+.Post {
+  width: 100%;
+  height: auto;
+  margin: 32px auto;
+}
+
+.Post-avatar {
+  padding: 0px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  margin-right: 16px;
+}
+
+.Post-modal {
+  max-width: 1000px;
+  max-height: 500px;
+  box-sizing: border-box;
+}

@@ -1,0 +1,18 @@
+.Profile {
+  max-width: 600px;
+  margin: 16px auto;
+  position: relative;
+}
+
+.Profile-avator {
+  padding: 0px;
+  border-radius: 50%;
+  width: 100%;
+  height: auto;
+  margin-right: 16px;
+}
+
+.Profile-modal {
+  max-width: 650px;
+  box-sizing: border-box;
+}

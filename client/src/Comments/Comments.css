@@ -1,0 +1,5 @@
+.Comments {
+  max-height: 300px;
+  overflow: scroll;
+  margin-bottom: 30px;
+}

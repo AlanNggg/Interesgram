@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 
 const favoriteSchema = mongoose.Schema({
-  userID: {
+  user: {
     type: mongoose.Types.ObjectId,
+    ref: "User",
     required: true,
   },
-  postID: {
+  post: {
     type: mongoose.Types.ObjectId,
+    ref: "Post",
     required: true,
   },
   createdAt: {
@@ -14,6 +16,8 @@ const favoriteSchema = mongoose.Schema({
     default: Date.now(),
   },
 });
+
+favoriteSchema.index({ user: 1, post: 1 }, { unique: true });
 
 const Favorite = mongoose.model("Favorite", favoriteSchema);
 

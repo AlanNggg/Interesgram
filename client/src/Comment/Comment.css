@@ -1,0 +1,15 @@
+.Comment {
+  width: 100%;
+}
+
+.Comment:first-of-type {
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.Comment-avatar {
+  padding: 0px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  margin-right: 16px;
+}

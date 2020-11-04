@@ -1,17 +1,19 @@
 const Follow = require("../models/followModel");
 const QueryFunctions = require("../utils/queryFunctions");
 
-exports.getAllFollows = async (req, res) => {
+exports.getFollows = async (req, res) => {
   try {
-    // followerID / followingID
+    console.log(req.query);
     const queryObj = new QueryFunctions(Follow.find(), req.query)
-      .filter()
+      .filter(false)
       .sort()
-      .select()
-      .paginate();
+      .select();
 
-    const follows = await queryObj.query;
+    const follows = await queryObj.query
+      .populate("follower")
+      .populate("following");
 
+    console.log(follows);
     res.status(200).json({
       status: "success",
       data: {
@@ -28,11 +30,12 @@ exports.getAllFollows = async (req, res) => {
 
 exports.addFollow = async (req, res) => {
   try {
-    const newFollow = await Follow.create(req.body);
+    const follow = await Follow.create(req.body);
+
     res.status(200).json({
       status: "success",
       data: {
-        follow: newFollow,
+        follow,
       },
     });
   } catch (err) {
@@ -45,11 +48,16 @@ exports.addFollow = async (req, res) => {
 
 exports.removeFollow = async (req, res) => {
   try {
-    await Follow.findByIdAndDelete(req.params.id);
+    const follow = await Follow.findByIdAndDelete(req.params.id);
+
+    if (!follow) {
+      return next(new AppError("No document found with that ID", 404));
+    }
+
     res.status(200).json({
       status: "success",
       data: {
-        post: null,
+        follow: null,
       },
     });
   } catch (err) {

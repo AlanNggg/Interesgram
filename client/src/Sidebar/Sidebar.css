@@ -1,0 +1,24 @@
+.Sidebar {
+  max-width: 250px;
+  height: 100%;
+  position: fixed;
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
+  padding-right: 15px;
+}
+.Sidebar-avator {
+  padding: 0px;
+  border-radius: 50%;
+  width: 50%;
+  height: auto;
+  margin: 16px auto;
+}
+
+@media screen and (max-width: 991px) {
+  .Sidebar {
+    position: static;
+    min-width: 100%;
+    margin: 0 auto !important;
+
+    border: none;
+  }
+}

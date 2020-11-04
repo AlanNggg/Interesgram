@@ -7,10 +7,9 @@ exports.getAllFavorites = async (req, res) => {
     const queryObj = new QueryFunctions(Favorite.find(), req.query)
       .filter()
       .sort()
-      .select()
-      .paginate();
+      .select();
 
-    const favorites = await queryObj.query;
+    const favorites = await queryObj.query.populate("user").populate("post");
 
     res.status(200).json({
       status: "success",
@@ -28,7 +27,7 @@ exports.getAllFavorites = async (req, res) => {
 
 exports.addFavorite = async (req, res) => {
   try {
-    const favorite = req.body;
+    const favorite = await Favorite.create(req.body);
     res.status(200).json({
       status: "success",
       data: {
@@ -45,11 +44,11 @@ exports.addFavorite = async (req, res) => {
 
 exports.removeFavorite = async (req, res) => {
   try {
-    const favorite = favoritesObj.find((el) => el._id == req.params.id);
+    await Favorite.findByIdAndDelete(req.params.id);
     res.status(200).json({
       status: "success",
       data: {
-        favorite,
+        favorite: null,
       },
     });
   } catch (err) {

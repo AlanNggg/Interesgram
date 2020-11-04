@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 
 const app = require("./app");
 
-mongoose.connect("mongodb://localhost:27017/interesgram", {
+mongoose.connect(process.env.DATABASE_LOCAL, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useFindAndModify: false,

@@ -1,0 +1,12 @@
+.UpdateProfile {
+  width: 100%;
+
+  margin: 8px auto;
+}
+.UpdateProfile-avator {
+  padding: 0px;
+  border-radius: 50%;
+  width: 100%;
+  height: auto;
+  margin-right: 16px;
+}

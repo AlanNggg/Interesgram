@@ -6,12 +6,11 @@ exports.getAllComments = async (req, res) => {
     // user ID, post ID, createdAt
     // filter() true: use Regex to find
     const queryObj = new QueryFunctions(Comment.find(), req.query)
-      .filter(true)
+      .filter(false)
       .sort()
-      .select()
-      .paginate();
+      .select();
 
-    const comments = await queryObj.query;
+    const comments = await queryObj.query.populate("user");
 
     res.status(200).json({
       status: "success",
@@ -29,11 +28,13 @@ exports.getAllComments = async (req, res) => {
 
 exports.createComment = async (req, res) => {
   try {
-    const newComment = await Comment.create(req.body);
+    let comment = await Comment.create(req.body);
+    comment = await comment.populate("user").execPopulate();
+
     res.status(200).json({
       status: "success",
       data: {
-        comment: newComment,
+        comment,
       },
     });
   } catch (err) {
@@ -47,6 +48,7 @@ exports.createComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
   try {
     await Comment.findByIdAndDelete(req.params.id);
+
     res.status(200).json({
       status: "success",
       data: {

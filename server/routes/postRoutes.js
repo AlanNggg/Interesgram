@@ -9,11 +9,13 @@ const checkImage = (req, res, next) => {
   console.log(req.body);
   next();
 };
+
+router.use(authController.authorization);
+
 router
   .route("/")
   .get(postController.getAllPosts)
   .post(
-    authController.authorization,
     postController.uploadImages,
     checkImage,
     postController.resizeImages,

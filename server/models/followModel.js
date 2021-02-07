@@ -17,6 +17,16 @@ const followSchema = mongoose.Schema({
   },
 });
 
+followSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "follower",
+  }).populate({
+    path: "following",
+  });
+
+  next();
+});
+
 followSchema.index({ follower: 1, following: 1 }, { unique: true });
 
 const Follow = mongoose.model("Follow", followSchema);

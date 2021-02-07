@@ -17,6 +17,15 @@ const postSchema = mongoose.Schema({
   },
 });
 
+postSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "author",
+    select: "-__v -passwordChangedAt",
+  });
+
+  next();
+});
+
 const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;

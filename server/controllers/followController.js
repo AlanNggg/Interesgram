@@ -1,7 +1,7 @@
 const Follow = require("../models/followModel");
 const QueryFunctions = require("../utils/queryFunctions");
 
-exports.getFollows = async (req, res) => {
+exports.getFollows = async (req, res, next) => {
   try {
     console.log(req.query);
     const queryObj = new QueryFunctions(Follow.find(), req.query)
@@ -21,14 +21,11 @@ exports.getFollows = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.addFollow = async (req, res) => {
+exports.addFollow = async (req, res, next) => {
   try {
     const follow = await Follow.create(req.body);
 
@@ -39,14 +36,11 @@ exports.addFollow = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.removeFollow = async (req, res) => {
+exports.removeFollow = async (req, res, next) => {
   try {
     const follow = await Follow.findByIdAndDelete(req.params.id);
 
@@ -61,9 +55,6 @@ exports.removeFollow = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };

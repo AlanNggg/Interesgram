@@ -12,6 +12,9 @@ router
   .get(commentController.getAllComments)
   .post(commentController.createComment);
 
-router.route("/:id").delete(commentController.deleteComment);
+router
+  .route("/:id")
+  .get(commentController.getComment)
+  .delete(commentController.deleteComment);
 
 module.exports = router;

@@ -22,6 +22,32 @@ const commentSchema = mongoose.Schema({
   },
 });
 
+commentSchema.post("save", async function (doc, next) {
+  // Call the populate on a DOC NEED TO CALL execPopulate
+  await doc
+    .populate({
+      path: "post",
+      select: "-__v",
+    })
+    .populate({
+      path: "user",
+      select: "name avator info",
+    })
+    .execPopulate();
+  next();
+});
+
+commentSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "post",
+    select: "-__v",
+  }).populate({
+    path: "user",
+    select: "name avator info",
+  });
+
+  next();
+});
 const Comment = mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;

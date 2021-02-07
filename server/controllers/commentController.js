@@ -1,7 +1,7 @@
 const Comment = require("../models/commentModel");
 const QueryFunctions = require("../utils/queryFunctions");
 
-exports.getAllComments = async (req, res) => {
+exports.getAllComments = async (req, res, next) => {
   try {
     // user ID, post ID, createdAt
     // filter() true: use Regex to find
@@ -14,22 +14,23 @@ exports.getAllComments = async (req, res) => {
 
     res.status(200).json({
       status: "success",
+      results: comments.length,
       data: {
         comments,
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.createComment = async (req, res) => {
+exports.getComment = async (req, res, next) => {
   try {
-    let comment = await Comment.create(req.body);
-    comment = await comment.populate("user").execPopulate();
+    const comment = await Comment.findById(req.params.id);
+
+    if (!comment) {
+      return next(new error("No comment found with that ID", 404));
+    }
 
     res.status(200).json({
       status: "success",
@@ -38,14 +39,30 @@ exports.createComment = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.deleteComment = async (req, res) => {
+exports.createComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.create({
+      user: req.user.id,
+      post: req.body.post,
+      comment: req.body.comment,
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        comment,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteComment = async (req, res, next) => {
   try {
     await Comment.findByIdAndDelete(req.params.id);
 
@@ -56,9 +73,6 @@ exports.deleteComment = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };

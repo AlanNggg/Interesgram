@@ -70,10 +70,7 @@ exports.getAllUsers = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
@@ -91,10 +88,7 @@ exports.getUser = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
@@ -112,10 +106,7 @@ exports.getUserById = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
@@ -130,10 +121,7 @@ exports.createUser = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
@@ -158,9 +146,6 @@ exports.updateUser = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };

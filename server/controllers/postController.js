@@ -25,7 +25,6 @@ exports.uploadImages = upload.array("images", 3);
 // upload.fields([{ name: "images", maxCount: 3 }]); => req.files
 
 exports.resizeImages = async (req, res, next) => {
-  console.log("images", req.body);
   if (!req.files) return next();
 
   console.log(req.files);
@@ -49,7 +48,7 @@ exports.resizeImages = async (req, res, next) => {
 
   next();
 };
-exports.getAllPosts = async (req, res) => {
+exports.getAllPosts = async (req, res, next) => {
   try {
     // author name, highest views, highest likes, createdAt
     const queryObj = new QueryFunctions(Post.find(), req.query)
@@ -57,7 +56,7 @@ exports.getAllPosts = async (req, res) => {
       .sort()
       .select();
 
-    const posts = await queryObj.query.populate("author");
+    const posts = await queryObj.query;
 
     res.status(200).json({
       status: "success",
@@ -66,16 +65,14 @@ exports.getAllPosts = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.getPost = async (req, res) => {
+exports.getPost = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate("author");
+    const post = await Post.findById(req.params.id);
+
     res.status(200).json({
       status: "success",
       data: {
@@ -83,10 +80,7 @@ exports.getPost = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
@@ -113,24 +107,19 @@ exports.createPost = async (req, res, next) => {
       },
     });
   } catch (err) {
-    // res.status(400).json({
-    //   status: "fail",
-    //   message: err,
-    // });
-    console.log(err);
+    next(err);
   }
 };
 
-exports.updatePost = async (req, res) => {
+exports.updatePost = async (req, res, next) => {
   try {
-    console.log(req.body.images);
     const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
 
     if (!post) {
-      return next(new error("No post found with ID"), 404);
+      return next(new error("No post found with ID", 404));
     }
 
     res.status(200).json({
@@ -140,14 +129,11 @@ exports.updatePost = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.deletePost = async (req, res) => {
+exports.deletePost = async (req, res, next) => {
   try {
     await Post.findByIdAndDelete(req.params.id);
     res.status(200).json({
@@ -157,9 +143,6 @@ exports.deletePost = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };

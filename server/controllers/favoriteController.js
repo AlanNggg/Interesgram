@@ -1,7 +1,8 @@
 const Favorite = require("../models/favoriteModel");
 const QueryFunctions = require("../utils/queryFunctions");
 
-exports.getAllFavorites = async (req, res) => {
+// Get all posts that users like (usage: Recommendation feature in the future)
+exports.getAllFavorites = async (req, res, next) => {
   try {
     // post ID, user ID, createdAt
     const queryObj = new QueryFunctions(Favorite.find(), req.query)
@@ -9,7 +10,7 @@ exports.getAllFavorites = async (req, res) => {
       .sort()
       .select();
 
-    const favorites = await queryObj.query.populate("user").populate("post");
+    const favorites = await queryObj.query;
 
     res.status(200).json({
       status: "success",
@@ -18,16 +19,17 @@ exports.getAllFavorites = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.addFavorite = async (req, res) => {
+exports.addFavorite = async (req, res, next) => {
   try {
-    const favorite = await Favorite.create(req.body);
+    const favorite = await Favorite.create({
+      user: req.user.id,
+      post: req.body.post,
+    });
+
     res.status(200).json({
       status: "success",
       data: {
@@ -35,26 +37,19 @@ exports.addFavorite = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };
 
-exports.removeFavorite = async (req, res) => {
+exports.removeFavorite = async (req, res, next) => {
   try {
     await Favorite.findByIdAndDelete(req.params.id);
+
     res.status(200).json({
       status: "success",
-      data: {
-        favorite: null,
-      },
+      data: null,
     });
   } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err,
-    });
+    next(err);
   }
 };

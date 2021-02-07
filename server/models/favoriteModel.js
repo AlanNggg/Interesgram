@@ -17,7 +17,15 @@ const favoriteSchema = mongoose.Schema({
   },
 });
 
-favoriteSchema.index({ user: 1, post: 1 }, { unique: true });
+// favoriteSchema.index({ user: 1, post: 1 }, { unique: true });
+
+favoriteSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "post",
+    select: "-__v",
+  });
+  next();
+});
 
 const Favorite = mongoose.model("Favorite", favoriteSchema);
 

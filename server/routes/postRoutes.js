@@ -1,8 +1,10 @@
 const express = require("express");
 const postController = require("../controllers/postController");
 const authController = require("../controllers/authController");
+const commentRouter = require("./commentRoutes");
+const favoriteRouter = require("./favoriteRoutes");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // router.use(authController.authorization);
 const checkImage = (req, res, next) => {
@@ -10,12 +12,15 @@ const checkImage = (req, res, next) => {
   next();
 };
 
-router.use(authController.authorization);
+// router.route("/:postId/comments").post(commentController.createComment);
+router.use("/:postId/comments", commentRouter);
+router.use("/:postId/favorites", favoriteRouter);
 
 router
   .route("/")
   .get(postController.getAllPosts)
   .post(
+    authController.authorization,
     postController.uploadImages,
     checkImage,
     postController.resizeImages,
@@ -26,6 +31,6 @@ router
 router
   .route("/:id")
   .get(postController.getPost)
-  .delete(postController.deletePost);
+  .delete(authController.authorization, postController.deletePost);
 
 module.exports = router;

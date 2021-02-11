@@ -48,30 +48,30 @@ const userSchema = mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
-  // {
-  //   toJSON: { virtuals: true },
-  //   toObject: { virtuals: true },
-  // }
 );
 
-// userSchema.virtual("followers", {
-//   ref: "Follow",
-//   localField: "_id",
-//   foreignField: "following",
-// });
+userSchema.virtual("followers", {
+  ref: "Follow",
+  localField: "_id",
+  foreignField: "following",
+});
 
-// userSchema.virtual("following", {
-//   ref: "Follow",
-//   localField: "_id",
-//   foreignField: "follower",
-// });
+userSchema.virtual("following", {
+  ref: "Follow",
+  localField: "_id",
+  foreignField: "follower",
+});
 
-// userSchema.virtual("posts", {
-//   ref: "Post",
-//   localField: "_id",
-//   foreignField: "author",
-// });
+userSchema.virtual("posts", {
+  ref: "Post",
+  localField: "_id",
+  foreignField: "author",
+});
 
 userSchema.pre("save", async function (next) {
   // Only run if password was modified or sign up

@@ -3,15 +3,18 @@ const express = require("express");
 const followController = require("../controllers/followController");
 const authController = require("../controllers/authController");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.use(authController.authorization);
+router.route("/followers").get(followController.getAllFollows);
+router.route("/followings").get(followController.getAllFollows);
 
 router
   .route("/")
-  .get(followController.getFollows)
-  .post(followController.addFollow);
+  .get(followController.getAllFollows)
+  .post(authController.authorization, followController.addFollow);
 
-router.route("/:id").delete(followController.removeFollow);
+router
+  .route("/:id")
+  .delete(authController.authorization, followController.removeFollow);
 
 module.exports = router;

@@ -4,8 +4,14 @@ const QueryFunctions = require("../utils/queryFunctions");
 // Get all posts that users like (usage: Recommendation feature in the future)
 exports.getAllFavorites = async (req, res, next) => {
   try {
+    let filter = {};
+    if (req.params.userId) {
+      filter = { user: req.params.userId };
+    } else if (req.params.postId) {
+      filter = { post: req.params.postId };
+    }
     // post ID, user ID, createdAt
-    const queryObj = new QueryFunctions(Favorite.find(), req.query)
+    const queryObj = new QueryFunctions(Favorite.find(filter), req.query)
       .filter()
       .sort()
       .select();

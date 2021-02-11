@@ -3,11 +3,17 @@ const QueryFunctions = require("../utils/queryFunctions");
 
 exports.getAllComments = async (req, res, next) => {
   try {
+    let filter = {};
+    if (req.params.postId) {
+      filter = { post: req.params.postId };
+    } else if (req.params.userId) {
+      filter = { user: req.params.userId };
+    }
+
     // user ID, post ID, createdAt
     // filter() true: use Regex to find
-    const queryObj = new QueryFunctions(Comment.find(), req.query)
+    const queryObj = new QueryFunctions(Comment.find(filter), req.query)
       .filter(false)
-      .sort()
       .select();
 
     const comments = await queryObj.query.populate("user");
@@ -45,11 +51,10 @@ exports.getComment = async (req, res, next) => {
 
 exports.createComment = async (req, res, next) => {
   try {
-    const comment = await Comment.create({
-      user: req.user.id,
-      post: req.body.post,
-      comment: req.body.comment,
-    });
+    if (!req.body.post) req.body.post = req.params.postId;
+    if (!req.body.user) req.body.user = req.user.id;
+
+    const comment = await Comment.create(req.body);
 
     res.status(200).json({
       status: "success",

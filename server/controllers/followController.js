@@ -1,10 +1,25 @@
 const Follow = require("../models/followModel");
 const QueryFunctions = require("../utils/queryFunctions");
 
-exports.getFollows = async (req, res, next) => {
+exports.getAllFollows = async (req, res, next) => {
   try {
-    console.log(req.query);
-    const queryObj = new QueryFunctions(Follow.find(), req.query)
+    let filter = {};
+    if (req.params.userId) {
+      if (req.path === "/followings") {
+        filter = { follower: req.params.userId };
+      } else if (req.path === "/followers") {
+        filter = { following: req.params.userId };
+      } else {
+        filter = {
+          $or: [
+            { follower: req.params.userId },
+            { following: req.params.userId },
+          ],
+        };
+      }
+    }
+
+    const queryObj = new QueryFunctions(Follow.find(filter), req.query)
       .filter(false)
       .sort()
       .select();
@@ -13,7 +28,6 @@ exports.getFollows = async (req, res, next) => {
       .populate("follower")
       .populate("following");
 
-    console.log(follows);
     res.status(200).json({
       status: "success",
       data: {

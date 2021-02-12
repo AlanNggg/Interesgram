@@ -17,8 +17,8 @@ router.post("/signup", authController.signup);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 
-router.post("/forgotpassword", authController.forgotPassword);
-router.patch("/resetpassword/:token", authController.resetPassword);
+router.post("/forgotPassword", authController.forgotPassword);
+router.patch("/resetPassword/:token", authController.resetPassword);
 
 router.use(authController.authorization);
 
@@ -34,7 +34,11 @@ router
   .get(userController.getAllUsers)
   .post(userController.createUser);
 
-router.route("/:name").get(userController.getUser);
-router.route("/id/:id").get(userController.getUserById);
+router
+  .route("/currentUser")
+  .get(userController.getCurrentUser, userController.getUser);
+
+router.route("/:id").get(userController.getUser);
+router.route("/by/username/:name").get(userController.getUserByUsername);
 
 module.exports = router;

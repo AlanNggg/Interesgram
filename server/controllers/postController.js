@@ -54,7 +54,7 @@ exports.getAllPosts = async (req, res, next) => {
     let filter = {};
     if (req.params.userId) filter = { author: req.params.userId };
     // author name, highest views, highest likes, createdAt
-    const queryObj = new QueryFunctions(Post.find(filter), req.query)
+    const queryObj = new QueryFunctions(Post.find(), req.query)
       .filter(true)
       .sort()
       .select();
@@ -74,7 +74,10 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPost = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate("comments");
+    const post = await Post.findById(req.params.id).populate({
+      path: "comments",
+      select: "-__v",
+    });
 
     res.status(200).json({
       status: "success",

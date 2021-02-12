@@ -24,9 +24,7 @@ exports.getAllFollows = async (req, res, next) => {
       .sort()
       .select();
 
-    const follows = await queryObj.query
-      .populate("follower")
-      .populate("following");
+    const follows = await queryObj.query;
 
     res.status(200).json({
       status: "success",

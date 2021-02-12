@@ -1,0 +1,15 @@
+Posts
+- add a Post
+- delete a Post
+- add comment to a Post
+- delete comment from a Post
+- add a post to favorite
+- remove a post from favorite
+
+Users
+- follow a User
+- Unfollow a User
+
+currentUser
+- edit profile
+- change password

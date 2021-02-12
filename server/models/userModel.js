@@ -55,22 +55,33 @@ const userSchema = mongoose.Schema(
   }
 );
 
-userSchema.virtual("followers", {
+userSchema.virtual("numFollowers", {
   ref: "Follow",
   localField: "_id",
   foreignField: "following",
+  count: true,
 });
 
-userSchema.virtual("following", {
+userSchema.virtual("numFollowings", {
   ref: "Follow",
   localField: "_id",
   foreignField: "follower",
+  count: true,
 });
 
-userSchema.virtual("posts", {
-  ref: "Post",
-  localField: "_id",
-  foreignField: "author",
+// userSchema.virtual("numPosts", {
+//   ref: "Post",
+//   localField: "_id",
+//   foreignField: "author",
+//   count: true,
+// });
+
+userSchema.pre(/^find/, function (next) {
+  this.select("-__v -passwordChangedAt")
+    .populate("numFollowers")
+    .populate("numFollowings");
+
+  next();
 });
 
 userSchema.pre("save", async function (next) {

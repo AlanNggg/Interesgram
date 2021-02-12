@@ -37,17 +37,14 @@ commentSchema.post("save", async function (doc, next) {
     })
     .populate({
       path: "user",
-      select: "name avator info",
+      select: "-__v -email -passwordChangedAt",
     })
     .execPopulate();
   next();
 });
 
 commentSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "user",
-    select: "name avator info",
-  });
+  this.select("-__v").populate("user");
 
   next();
 });

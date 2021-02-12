@@ -51,17 +51,19 @@ exports.resizeAvator = async (req, res, next) => {
   next();
 };
 
-exports.getAllUsers = async (req, res) => {
+exports.getCurrentUser = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
+exports.getAllUsers = async (req, res, next) => {
   try {
-    const queryObj = new QueryFunctions(User.find(), req.query)
+    const queryObj = new QueryFunctions(User.find().select("-email"), req.query)
       .filter(true)
       .sort()
       .select();
 
-    const users = await queryObj.query
-      .populate("followers")
-      .populate("following")
-      .populate("posts");
+    const users = await queryObj.query;
 
     res.status(200).json({
       status: "success",
@@ -74,12 +76,9 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-exports.getUser = async (req, res) => {
+exports.getUserByUsername = async (req, res, next) => {
   try {
-    const user = await User.findOne({ name: req.params.name })
-      .populate("followers")
-      .populate("following")
-      .populate("posts");
+    const user = await User.findOne({ name: req.params.name }).select("-email");
 
     res.status(200).json({
       status: "success",
@@ -92,12 +91,14 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.getUserById = async (req, res) => {
+exports.getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id)
-      .populate("followers")
-      .populate("following")
-      .populate("posts");
+    let query = User.findById(req.params.id);
+
+    if (req.params.id !== req.user.id) {
+      query = query.select("-email");
+    }
+    const user = await query;
 
     res.status(200).json({
       status: "success",
@@ -110,7 +111,7 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   try {
     const newUser = await User.create(req.body);
 
@@ -125,19 +126,16 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   try {
     if (req.file) req.body.avator = req.file.filename;
-    console.log(req.body);
+
     console.log(req.body, req.file);
     const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
       // return new one
       new: true,
       runValidators: true,
-    })
-      .populate("followers")
-      .populate("following")
-      .populate("posts");
+    });
 
     res.status(200).json({
       status: "success",

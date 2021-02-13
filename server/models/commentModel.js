@@ -37,7 +37,7 @@ commentSchema.post("save", async function (doc, next) {
     })
     .populate({
       path: "user",
-      select: "-__v -email -passwordChangedAt",
+      select: "-email -passwordChangedAt",
     })
     .execPopulate();
   next();

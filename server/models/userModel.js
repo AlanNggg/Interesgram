@@ -69,12 +69,12 @@ userSchema.virtual("numFollowings", {
   count: true,
 });
 
-// userSchema.virtual("numPosts", {
-//   ref: "Post",
-//   localField: "_id",
-//   foreignField: "author",
-//   count: true,
-// });
+userSchema.virtual("numPosts", {
+  ref: "Post",
+  localField: "_id",
+  foreignField: "author",
+  count: true,
+});
 
 userSchema.pre(/^find/, function (next) {
   this.select("-__v -passwordChangedAt")

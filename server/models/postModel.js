@@ -30,7 +30,8 @@ postSchema.virtual("comments", {
 });
 
 postSchema.pre(/^find/, function (next) {
-  this.select("-__v").populate("author");
+  this.populate("author");
+  // .select("-__v")
   next();
 });
 

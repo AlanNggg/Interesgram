@@ -58,7 +58,10 @@ exports.getCurrentUser = (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const queryObj = new QueryFunctions(User.find().select("-email"), req.query)
+    const queryObj = new QueryFunctions(
+      User.find().select("-email").populate("numPosts"),
+      req.query
+    )
       .filter(true)
       .sort()
       .select();
@@ -78,7 +81,9 @@ exports.getAllUsers = async (req, res, next) => {
 
 exports.getUserByUsername = async (req, res, next) => {
   try {
-    const user = await User.findOne({ name: req.params.name }).select("-email");
+    const user = await User.findOne({ name: req.params.name })
+      .select("-email")
+      .populate("numPosts");
 
     res.status(200).json({
       status: "success",
@@ -93,7 +98,7 @@ exports.getUserByUsername = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    let query = User.findById(req.params.id);
+    let query = User.findById(req.params.id).populate("numPosts");
 
     if (req.params.id !== req.user.id) {
       query = query.select("-email");

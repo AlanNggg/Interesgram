@@ -7,18 +7,19 @@ const initialState = {
 const posts = (state = initialState, action) => {
   switch (action.type) {
     case GET_POSTS:
+    case GET_USER_POSTS:
       return {
         ...state,
         posts: action.payload,
       };
 
-    case CREATE_USER_POST:
+    case CREATE_POST:
       return {
         ...state,
         posts: [...state.posts, action.payload],
       };
 
-    case DELETE_USER_POST:
+    case DELETE_POST:
       return {
         ...state,
         posts: state.posts.filter((post) => post.id !== action.payload),
@@ -27,3 +28,5 @@ const posts = (state = initialState, action) => {
       return state;
   }
 };
+
+export default posts;

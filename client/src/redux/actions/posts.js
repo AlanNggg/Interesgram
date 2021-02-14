@@ -1,11 +1,11 @@
 import axios from "axios";
+import config from "../../config";
 import {
   GET_POSTS,
   GET_USER_POSTS,
   CREATE_POST,
   DELETE_POST,
 } from "../constants";
-import config from "../../config";
 
 export const getPosts = () => async (dispatch) => {
   try {
@@ -17,10 +17,10 @@ export const getPosts = () => async (dispatch) => {
   }
 };
 
-export const getPostsFromUser = (id) => async (dispatch) => {
+export const getPostsFromUser = (userId) => async (dispatch) => {
   try {
     const res = await axios.get(
-      `${config.SERVER_URL}/api/v1/users/${id}/posts`
+      `${config.SERVER_URL}/api/v1/users/${userId}/posts`
     );
 
     dispatch({ type: GET_USER_POSTS, payload: res.data });
@@ -39,11 +39,13 @@ export const createPost = (post) => async (dispatch) => {
   }
 };
 
-export const deletePost = (id) => async (dispatch) => {
+export const deletePost = (postId) => async (dispatch) => {
   try {
-    const res = await axios.delete(`${config.SERVER_URL}/api/v1/posts/${id}`);
+    const res = await axios.delete(
+      `${config.SERVER_URL}/api/v1/posts/${postId}`
+    );
 
-    dispatch({ type: DELETE_POST, payload: id });
+    dispatch({ type: DELETE_POST, payload: postId });
   } catch (err) {
     console.log(err);
   }

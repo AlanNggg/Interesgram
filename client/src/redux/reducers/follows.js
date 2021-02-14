@@ -14,32 +14,33 @@ const initialState = {
 const follows = (state = initialState, action) => {
   switch (action.type) {
     case GET_FOLLOWINGS:
+      console.log(action.payload.data.follows);
       return {
         ...state,
-        followings: action.payload,
+        followings: action.payload.data.follows,
       };
     case GET_FOLLOWERS:
       return {
         ...state,
-        followers: action.payload,
+        followers: action.payload.data.follows,
       };
     case ADD_FOLLOWING:
       return {
         ...state,
-        followings: [...state.followings, action.payload],
+        followings: [...state.followings, action.payload.data.follow],
       };
     case REMOVE_FOLLOWING:
       return {
         ...state,
         followings: state.followings.filter(
-          (following) => following.id !== action.payload
+          (following) => following.id !== action.payload.data.follow.id
         ),
       };
     case REMOVE_FOLLOWER:
       return {
         ...state,
         followers: state.followers.filter(
-          (follower) => follower.id !== action.payload
+          (follower) => follower.id !== action.payload.data.follow.id
         ),
       };
     default:

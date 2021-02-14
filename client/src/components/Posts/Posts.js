@@ -1,28 +1,27 @@
 import React, { Component } from "react";
 import Post from "../Post/Post";
 import "./Posts.css";
-import config from "../../config";
+import { getPosts } from "../../redux/actions/posts";
+import { connect } from "react-redux";
 
 class Posts extends Component {
+  componentDidMount() {
+    this.props.getPosts();
+  }
   render() {
-    const { user, posts, cookies } = this.props;
+    const { posts } = this.props;
     return (
       <div className="Posts">
         {posts.map((post) => (
-          <Post
-            key={post._id}
-            user={user}
-            id={post._id}
-            author={post.author}
-            images={post.images}
-            description={post.description}
-            createdAt={post.createdAt}
-            cookies={cookies}
-          />
+          <Post key={post.id} post={post} />
         ))}
       </div>
     );
   }
 }
 
-export default Posts;
+const mapStateToProps = (state) => ({
+  posts: state.posts.posts,
+});
+
+export default connect(mapStateToProps, { getPosts })(Posts);

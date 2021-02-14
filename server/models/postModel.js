@@ -30,8 +30,12 @@ postSchema.virtual("comments", {
 });
 
 postSchema.pre(/^find/, function (next) {
-  this.populate("author");
-  // .select("-__v")
+  this.populate({
+    path: "author",
+    select:
+      "-email -passwordChangedAt -passwordResetExpires -passwordResetToken",
+  });
+
   next();
 });
 

@@ -37,14 +37,19 @@ commentSchema.post("save", async function (doc, next) {
     })
     .populate({
       path: "user",
-      select: "-email -passwordChangedAt",
+      select:
+        "-email -passwordChangedAt -passwordResetExpires -passwordResetToken",
     })
     .execPopulate();
   next();
 });
 
 commentSchema.pre(/^find/, function (next) {
-  this.select("-__v").populate("user");
+  this.select("-__v").populate({
+    path: "user",
+    select:
+      "-email -passwordChangedAt -passwordResetExpires -passwordResetToken",
+  });
 
   next();
 });

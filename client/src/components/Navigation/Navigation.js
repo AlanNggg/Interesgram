@@ -41,8 +41,7 @@ class Navigation extends Component {
   }
   render() {
     const { name, show } = this.state;
-    const { user, cookies, loadPosts, loadUser } = this.props;
-    const token = cookies.get("jwt");
+    const { user, loadPosts, loadUser } = this.props;
 
     return (
       <Navbar sticky="top" bg="light" expand="lg">
@@ -90,7 +89,6 @@ class Navigation extends Component {
                     user={user}
                     loadPosts={loadPosts}
                     loadUser={loadUser}
-                    cookies={cookies}
                   />
                 </Modal.Body>
               </Modal>

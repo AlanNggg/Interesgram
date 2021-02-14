@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Form, Button } from "react-bootstrap";
-import axios from "axios";
-import config from "../../config";
+import { Link, Redirect } from "react-router-dom";
+import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import "./SignUp.css";
 import { connect } from "react-redux";
 import { signUp } from "../../redux/actions/auth";
@@ -19,14 +18,25 @@ class SignUp extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  async handleSubmit(evt) {
+  handleSubmit(evt) {
     evt.preventDefault();
+    const { name, email, password, passwordConfirm } = this.state;
+    const newUser = {
+      name,
+      email,
+      password,
+      passwordConfirm,
+    };
+    this.props.signUp(newUser);
   }
 
   handleChange(evt) {
     this.setState({ [evt.target.name]: evt.target.value });
   }
   render() {
+    if (this.props.isAuthenticated) {
+      return <Redirect to="/" />;
+    }
     return (
       <div className="SignUp">
         <Container fluid>

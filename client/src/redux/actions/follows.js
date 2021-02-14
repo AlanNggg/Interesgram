@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import config from "../../config";
 import {
   GET_FOLLOWINGS,
   GET_FOLLOWERS,
@@ -11,7 +11,7 @@ import {
 export const getFollowings = (userId) => async (dispatch) => {
   try {
     const res = await axios.get(
-      `${config.SERVER_URL}/api/v1/users/${userId}/followings`
+      `${config.SERVER_URL}/api/v1/users/${userId}/follows/followings`
     );
 
     dispatch({ type: GET_FOLLOWINGS, payload: res.data });
@@ -23,7 +23,7 @@ export const getFollowings = (userId) => async (dispatch) => {
 export const getFollowers = (userId) => async (dispatch) => {
   try {
     const res = await axios.get(
-      `${config.SERVER_URL}/api/v1/users/${userId}/followers`
+      `${config.SERVER_URL}/api/v1/users/${userId}/follows/followers`
     );
 
     dispatch({ type: GET_FOLLOWERS, payload: res.data });

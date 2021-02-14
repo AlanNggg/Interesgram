@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Container, Nav, Row, Col, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import config from "../../config";
+import Cookies from "js-cookie";
 import FollowList from "../FollowList/FollowList";
 import "./Sidebar.css";
+import config from "../../config";
 import { connect } from "react-redux";
 import { logout } from "../../redux/actions/auth";
 
@@ -22,8 +23,6 @@ class Sidebar extends Component {
   }
 
   logout() {
-    const { cookies } = this.props;
-    cookies.remove("jwt");
     this.props.logout();
   }
 
@@ -45,6 +44,7 @@ class Sidebar extends Component {
 
   render() {
     const { user } = this.props.auth;
+
     const { show, typeOfList } = this.state;
     return (
       <div className="Sidebar">

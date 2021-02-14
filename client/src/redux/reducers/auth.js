@@ -6,6 +6,7 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_FAIL,
   LOGOUT_SUCCESS,
+  AUTH_ERROR,
 } from "../constants";
 
 const initialState = {
@@ -26,13 +27,14 @@ const auth = (state = initialState, action) => {
     case SIGNUP_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        user: action.payload.data.user,
         isAuthenticated: true,
         isLoading: false,
       };
     case LOGIN_FAIL:
     case LOGOUT_SUCCESS:
     case SIGNUP_FAIL:
+    case AUTH_ERROR:
       return {
         ...state,
         user: null,

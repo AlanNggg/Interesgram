@@ -35,7 +35,11 @@ exports.signup = async (req, res, next) => {
   try {
     let newUser = await User.create(req.body);
 
-    newUser = await newUser;
+    newUser = await newUser
+      .populate("numFollowers")
+      .populate("numFollowings")
+      .populate("numPosts")
+      .execPopulate();
 
     createToken(newUser, 201, res);
   } catch (err) {
@@ -52,7 +56,11 @@ exports.login = async (req, res, next) => {
       return next(new error("Please provide email and password", 400));
     }
 
-    let user = await User.findOne({ email }).select("+password");
+    let user = await User.findOne({ email })
+      .populate("numPosts")
+      .populate("numFollowers")
+      .populate("numFollowings")
+      .select("+password");
 
     if (!user || !(await user.comparePassword(password, user.password))) {
       return next(new error("Incorrect email or password", 401));

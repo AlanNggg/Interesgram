@@ -8,7 +8,6 @@ import {
   faComment as farComment,
 } from "@fortawesome/free-regular-svg-icons";
 import PostDetail from "../PostDetail/PostDetail";
-import config from "../../config";
 import "./Post.css";
 
 class Post extends Component {
@@ -33,34 +32,25 @@ class Post extends Component {
   }
 
   render() {
-    const {
-      user,
-      id,
-      author,
-      images,
-      description,
-      createdAt,
-      cookies,
-    } = this.props;
+    const { post } = this.props;
     const { show } = this.state;
 
-    console.log(images);
     return (
       <div className="Post">
         <Card>
           <Card.Body>
-            <Nav.Link as={Link} to={`/${author.name}`} className="px-0">
+            <Nav.Link as={Link} to={`/${post.author.name}`} className="px-0">
               <Card.Title className="text-sm-left">
                 <img
-                  src={`/img/users/${author.avator}`}
+                  src={`/img/users/${post.author.avator}`}
                   className="Post-avatar"
                 />
-                {author.name}
+                {post.author.name}
               </Card.Title>
             </Nav.Link>
-            {images && (
+            {post.images && (
               <Carousel>
-                {images.map((image) => {
+                {post.images.map((image) => {
                   return (
                     <Carousel.Item key={image}>
                       <img
@@ -72,8 +62,10 @@ class Post extends Component {
                 })}
               </Carousel>
             )}
-            <Card.Text className={images.length > 0 ? "my-3" : "text-sm-left"}>
-              {description}
+            <Card.Text
+              className={post.images.length > 0 ? "my-3" : "text-sm-left"}
+            >
+              {post.description}
             </Card.Text>
             <Card.Text className="post-icons text-sm-left">
               <a className="mr-3" onClick={this.handleAddFavorite}>
@@ -85,21 +77,13 @@ class Post extends Component {
               <Modal
                 show={show}
                 dialogClassName={
-                  images.length > 0 ? "Post-modal" : "Post-modal-no-images"
+                  post.images.length > 0 ? "Post-modal" : "Post-modal-no-images"
                 }
                 onHide={this.handleClose}
               >
                 <Modal.Header className="py-2" closeButton />
                 <Modal.Body className="py-3">
-                  <PostDetail
-                    id={id}
-                    user={user}
-                    images={images}
-                    author={author}
-                    description={description}
-                    createdAt={createdAt}
-                    cookies={cookies}
-                  />
+                  <PostDetail post={post} />
                 </Modal.Body>
               </Modal>
             </Card.Text>

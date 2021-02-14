@@ -15,7 +15,7 @@ const comments = (state = initialState, action) => {
     case GET_USER_COMMENTS:
       return {
         ...state,
-        comments: action.payload,
+        comments: action.payload.data.comments,
       };
 
     case CREATE_COMMENT:

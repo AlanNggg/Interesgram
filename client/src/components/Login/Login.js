@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Container, Form, Button } from "react-bootstrap";
-import config from "../../config";
+import { Link, Redirect } from "react-router-dom";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "./Login.css";
-import Cookies from "universal-cookie";
 import { connect } from "react-redux";
 import { login } from "../../redux/actions/auth";
+import Cookies from "universal-cookie";
 
 class Login extends Component {
   constructor(props) {
@@ -30,6 +30,11 @@ class Login extends Component {
   }
 
   render() {
+    if (this.props.isAuthenticated) {
+      const cookies = new Cookies();
+      console.log(cookies.get("jwt"));
+      return <Redirect to="/" />;
+    }
     return (
       <div className="Login">
         <Container fluid>

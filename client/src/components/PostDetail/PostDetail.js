@@ -18,87 +18,47 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import Comments from "../Comments/Comments";
 import config from "../../config";
+import { createComment } from "../../redux/actions/comments";
+import { connect } from "react-redux";
 
 class PostDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       comment: "",
-      comments: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async componentDidMount() {
-    try {
-      const { id, cookies } = this.props;
-
-      const result = await axios.get(
-        `${config.SERVER_URL}/api/v1/comments?post=${id}`,
-        {
-          withCredentials: true,
-          headers: {
-            authorization: cookies.get("jwt"),
-          },
-        }
-      );
-
-      this.setState({
-        comments: result.data.data.comments,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   handleChange(evt) {
     this.setState({ [evt.target.name]: evt.target.value });
   }
-  async handleSubmit(evt) {
+
+  handleSubmit(evt) {
     evt.preventDefault();
-    try {
-      const { id, user, cookies } = this.props;
 
-      const { comment } = this.state;
-      const result = await axios.post(
-        `${config.SERVER_URL}/api/v1/comments`,
-        {
-          user: user._id,
-          post: id,
-          comment,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            authorization: cookies.get("jwt"),
-          },
-        }
-      );
-
-      this.setState((st) => ({
-        comments: [...st.comments, result.data.data.comment],
-        comment: "",
-      }));
-    } catch (err) {
-      console.log(err);
-    }
+    const newComment = {
+      post: this.props.post.id,
+      comment: this.state.comment,
+    };
+    this.props.createComment(newComment);
   }
 
   render() {
-    const { id, author, images, description, createdAt, cookies } = this.props;
+    const { post } = this.props;
 
-    const { comment, comments } = this.state;
+    const { comment } = this.state;
 
     return (
       <div className="PostDetail">
         <Card>
           <Card.Body>
             <Row xs={1}>
-              {images.length > 0 && (
+              {post.images.length > 0 && (
                 <Col lg={7}>
                   <Carousel>
-                    {images.map((image) => {
+                    {post.images.map((image) => {
                       return (
                         <Carousel.Item key={image}>
                           <img
@@ -111,25 +71,31 @@ class PostDetail extends Component {
                   </Carousel>
                 </Col>
               )}
-              <Col xs lg={images.length > 0 && 5}>
-                <Nav.Link as={Link} to={`/${author.name}`} className="px-0">
+              <Col xs lg={post.images.length > 0 && 5}>
+                <Nav.Link
+                  as={Link}
+                  to={`/${post.author.name}`}
+                  className="px-0"
+                >
                   <Card.Title className="text-sm-left">
                     <img
-                      src={`/img/users/${author.avator}`}
+                      src={`/img/users/${post.author.avator}`}
                       className="Post-avatar"
                     />
-                    {author.name}
+                    {post.author.name}
                   </Card.Title>
                 </Nav.Link>
 
-                <Card.Text className="text-sm-left">{description}</Card.Text>
+                <Card.Text className="text-sm-left">
+                  {post.description}
+                </Card.Text>
                 <Card.Text className="post-icons text-sm-left">
                   <a href="/" className="mr-3">
                     <FontAwesomeIcon icon={farHeart} size="lg" />
                   </a>
                 </Card.Text>
 
-                <Comments comments={comments} />
+                <Comments postId={post.id} />
                 <Form className="mb-0" inline>
                   <Form.Group className="d-flex flex-row">
                     <Form.Control
@@ -159,4 +125,4 @@ class PostDetail extends Component {
   }
 }
 
-export default PostDetail;
+export default connect(null, { createComment })(PostDetail);

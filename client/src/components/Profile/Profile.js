@@ -12,138 +12,63 @@ import jwt_decode from "jwt-decode";
 import axios from "axios";
 import config from "../../config";
 import UpdateProfile from "../UpdateProfile/UpdateProfile";
-import Thumbnail from "../Thumbnail/Thumbnail";
+import Thumbnails from "../UpdateProfile/UpdateProfile";
+
 import "./Profile.css";
+import { getUserByUsername } from "../../redux/actions/users";
+import {
+  getFollowings,
+  getFollowers,
+  addFollowing,
+  removeFollowing,
+} from "../../redux/actions/follows";
+import { connect } from "react-redux";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      id: "",
-      name: "",
-      avator: "",
-      info: "",
-      email: "",
       allowEdit: false,
-      numPosts: 0,
-      followers: [],
-      following: [],
-      show: false,
-      posts: [],
       isFollowing: false,
+      show: false,
     };
+
     this.handleClick = this.handleClick.bind(this);
     this.handleFollow = this.handleFollow.bind(this);
-    this.save = this.save.bind(this);
-    this.loadSelectedUser = this.loadSelectedUser.bind(this);
-    this.loadSelectedUserByJWT = this.loadSelectedUserByJWT.bind(this);
   }
 
-  async componentDidMount() {
-    if (!this.props.user && !this.props.cookies.get("jwt"))
-      this.props.history.push("/");
+  componentDidMount() {
+    const { name } = this.props.match.params;
+    const {
+      auth,
+      selectedUser,
+      follows,
+      getUserByUsername,
+      getFollowings,
+      getFollowers,
+    } = this.props;
 
-    if (this.props.user) await this.loadSelectedUser();
-    else await this.loadSelectedUserByJWT();
-  }
+    getUserByUsername(name);
 
-  // Load a User Profile if current user logged in
-  async loadSelectedUser() {
-    try {
-      const { user, cookies } = this.props;
-      const { name } = this.props.match.params;
+    if (selectedUser.id === auth.user.id) {
+      this.setState({
+        // For checking if current User select himself/herself
+        allowEdit: true,
+      });
+    } else {
+      getFollowings(selectedUser.id);
+      getFollowers(selectedUser.id);
 
-      const result = await axios.get(
-        `${config.SERVER_URL}/api/v1/users/${name}`,
-        {
-          withCredentials: true,
-          headers: {
-            authorization: cookies.get("jwt"),
-          },
-        }
-      );
-      const {
-        id,
-        avator,
-        info,
-        email,
-        followers,
-        following,
-        posts,
-      } = result.data.data.user;
-
-      // Check if current user follows the selected user
       let isFollowing = false;
-
-      user.following.forEach((el) => {
-        if (el.following === id) isFollowing = true;
+      follows.followers.forEach((follower) => {
+        if (follower.follower.id === auth.user.id) isFollowing = true;
       });
 
       this.setState({
-        id,
-        name,
-        avator,
-        info,
-        email,
-        followers,
-        following,
-        posts,
-        isFollowing,
         // For checking if current User select himself/herself
-        allowEdit: name === user.name,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  // // Load a User Profile if current user logged in
-  async loadSelectedUserByJWT() {
-    try {
-      const { cookies } = this.props;
-      const decoded = jwt_decode(cookies.get("jwt"));
-      const { name } = this.props.match.params;
-
-      const result = await axios.get(
-        `${config.SERVER_URL}/api/v1/users/${name}`,
-        {
-          withCredentials: true,
-          headers: {
-            authorization: cookies.get("jwt"),
-          },
-        }
-      );
-      const {
-        id,
-        avator,
-        info,
-        email,
-        following,
-        followers,
-        posts,
-      } = result.data.data.user;
-
-      // Check if current user follows the selected user
-      let isFollowing = false;
-
-      followers.forEach((el) => {
-        if (el.follower === decoded.id) isFollowing = true;
-      });
-
-      this.setState({
-        name,
-        avator,
-        info,
-        email,
-        following,
-        followers,
-        posts,
         isFollowing,
-        // For checking if current User select himself/herself
-        allowEdit: id === decoded.id,
       });
-    } catch (err) {
-      console.log(err);
     }
   }
 
@@ -151,132 +76,30 @@ class Profile extends Component {
     this.setState((st) => ({ show: !st.show }));
   }
 
-  async handleFollow() {
-    try {
-      const { user, cookies } = this.props;
-      const { id, followers, isFollowing } = this.state;
-      const token = cookies.get("jwt");
-
-      if (!isFollowing) {
-        const result = await axios.post(
-          `${config.SERVER_URL}/api/v1/follows`,
-          {
-            follower: user._id,
-            following: id,
-          },
-          {
-            withCredentials: true,
-            headers: {
-              authorization: token,
-            },
-          }
-        );
-
-        this.setState((st) => {
-          return {
-            isFollowing: true,
-            followers: [...st.followers, result.data.data.follow],
-          };
-        });
-      } else {
-        const follow = followers.find(
-          (follower) => follower.follower === user._id
-        );
-
-        const result = await axios.delete(
-          `${config.SERVER_URL}/api/v1/follows/${follow._id}`,
-          {
-            withCredentials: true,
-            headers: {
-              authorization: token,
-            },
-          }
-        );
-
-        this.setState((st) => ({
-          isFollowing: false,
-          followers: st.followers.filter(
-            (follower) => follower._id !== follow._id
-          ),
-        }));
-      }
-
-      await this.props.loadUser();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  // Update User: avator, name, info
-  async save(form) {
-    try {
-      const { cookies } = this.props;
-      const token = cookies.get("jwt");
-      const result = await axios.patch(
-        `${config.SERVER_URL}/api/v1/users/update`,
-        form,
-        {
-          withCredentials: true,
-          headers: {
-            authorization: token,
-          },
-        }
-      );
-      const { name, avator, info } = result.data.data.user;
-      this.setState({ name, avator, info });
-
-      // Update Current User State in App/root
-      this.props.loadUser();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  render() {
-    // Selected User Info
+  handleFollow() {
+    const { isFollowing } = this.state;
     const {
-      id,
-      name,
-      avator,
-      info,
-      email,
-      isFollowing,
-      allowEdit,
-      followers,
-      following,
-      posts,
-      show,
-    } = this.state;
+      auth,
+      selectedUser,
+      follows,
+      addFollowing,
+      removeFollowing,
+    } = this.props;
 
-    // Current User, JWT
-    const { user, cookies } = this.props;
-    console.log(user);
-
-    let author;
-    if (user._id == id) {
-      author = user;
+    if (!isFollowing) {
+      addFollowing(selectedUser.id);
     } else {
-      author = {
-        avator,
-        info,
-        _id: id,
-        name,
-        email,
-      };
+      const follow = follows.followers.find(
+        (follower) => follower.follower.id === auth.user.id
+      );
+      console.log(follow.id);
+      removeFollowing(follow.id);
     }
+  }
 
-    const thumbnails = posts.map((post) => (
-      <Col key={post._id} xs={12} className="my-3">
-        <Thumbnail
-          user={user}
-          id={post._id}
-          author={author}
-          images={post.images}
-          description={post.description}
-          createdAt={post.createdAt}
-          cookies={cookies}
-        />
-      </Col>
-    ));
+  render() {
+    const { selectedUser } = this.props;
+    const { allowEdit, isFollowing, show } = this.state;
 
     return (
       <div className="Profile">
@@ -285,13 +108,13 @@ class Profile extends Component {
             <Card.Title className="text-sm-left">
               <Row>
                 <Col xs={3}>
-                  <img
+                  {/* <img
                     className="Profile-avator"
-                    src={`/img/users/${avator}`}
-                  />
+                    src={`/img/users/${selectedUser.avator}`}
+                  /> */}
                 </Col>
                 <Col>
-                  <div className="my-3">{name}</div>
+                  {/* <div className="my-3">{selectedUser.name}</div> */}
                   {allowEdit ? (
                     <Button
                       variant="outline-primary"
@@ -326,24 +149,35 @@ class Profile extends Component {
                 </Col>
               </Row>
             </Card.Title>
-            <Card.Text className="text-sm-left my-4">{info}</Card.Text>
+            <Card.Text className="text-sm-left my-4">
+              {/* {selectedUser.info} */}
+            </Card.Text>
 
             <Row>
-              <Col>Posts {posts.length}</Col>
-              <Col>Followers {followers.length}</Col>
-              <Col>Following {following.length}</Col>
+              {/* <Col>Posts {selectedUser.numPosts}</Col>
+              <Col>Followers {selectedUser.numFollowers}</Col>
+              <Col>Following {selectedUser.numFollowings}</Col> */}
             </Row>
           </Card.Body>
         </Card>
         <Row md={3} className="Profile-thumbnails">
-          {thumbnails}
+          {/* <Thumbnails userId={selectedUser.id} /> */}
         </Row>
       </div>
     );
   }
 }
 
-const mapStateToProps = {
+const mapStateToProps = (state) => ({
   auth: state.auth,
-};
-export default Profile;
+  selectedUser: state.users.selectedUser,
+  follows: state.follows,
+});
+
+export default connect(mapStateToProps, {
+  getUserByUsername,
+  getFollowings,
+  getFollowers,
+  addFollowing,
+  removeFollowing,
+})(Profile);

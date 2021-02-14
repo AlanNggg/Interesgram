@@ -1,4 +1,5 @@
 import axios from "axios";
+import config from "../../config";
 
 import {
   USER_LOADED,
@@ -8,12 +9,14 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_FAIL,
   LOGOUT_SUCCESS,
+  AUTH_ERROR,
 } from "../constants";
 
 export const getCurrentUser = () => async (dispatch) => {
   dispatch({ type: USER_LOADING });
 
   try {
+    axios.defaults.withCredentials = true;
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/currentUser`
     );
@@ -25,7 +28,7 @@ export const getCurrentUser = () => async (dispatch) => {
 };
 
 export const login = (email, password) => async (dispatch) => {
-  const config = {
+  const setting = {
     headers: {
       "Content-Type": "application/json",
     },
@@ -34,10 +37,11 @@ export const login = (email, password) => async (dispatch) => {
   const body = JSON.stringify({ email, password });
 
   try {
+    axios.defaults.withCredentials = true;
     const res = await axios.post(
       `${config.SERVER_URL}/api/v1/users/login`,
       body,
-      config
+      setting
     );
 
     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
@@ -49,7 +53,7 @@ export const login = (email, password) => async (dispatch) => {
 export const signUp = ({ name, email, password, passwordConfirm }) => async (
   dispatch
 ) => {
-  const config = {
+  const setting = {
     headers: {
       "Content-Type": "application/json",
     },
@@ -61,7 +65,7 @@ export const signUp = ({ name, email, password, passwordConfirm }) => async (
     const res = await axios.post(
       `${config.SERVER_URL}/api/v1/users/signup`,
       body,
-      config
+      setting
     );
 
     dispatch({ type: SIGNUP_SUCCESS, payload: res.data });

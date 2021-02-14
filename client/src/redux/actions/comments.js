@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import config from "../../config";
 import {
   GET_POST_COMMENTS,
   GET_USER_COMMENTS,
@@ -7,10 +7,10 @@ import {
   DELETE_COMMENT,
 } from "../constants";
 
-export const getPostComments = (id) => async (dispatch) => {
+export const getPostComments = (postId) => async (dispatch) => {
   try {
     const res = await axios.get(
-      `${config.SERVER_URL}/api/v1/posts/${id}/comments`
+      `${config.SERVER_URL}/api/v1/posts/${postId}/comments`
     );
 
     dispatch({ type: GET_POST_COMMENTS, payload: res.data });
@@ -19,10 +19,10 @@ export const getPostComments = (id) => async (dispatch) => {
   }
 };
 
-export const getUserComments = (id) => async (dispatch) => {
+export const getUserComments = (userId) => async (dispatch) => {
   try {
     const res = await axios.get(
-      `${config.SERVER_URL}/api/v1/users/${id}/comments`
+      `${config.SERVER_URL}/api/v1/users/${userId}/comments`
     );
 
     dispatch({ type: GET_USER_COMMENTS, payload: res.data });
@@ -44,13 +44,13 @@ export const createComment = (comment) => async (dispatch) => {
   }
 };
 
-export const deleteComment = (id) => async (dispatch) => {
+export const deleteComment = (commentId) => async (dispatch) => {
   try {
     const res = await axios.delete(
-      `${config.SERVER_URL}/api/v1/comments/${id}`
+      `${config.SERVER_URL}/api/v1/comments/${commentId}`
     );
 
-    dispatch({ type: DELETE_COMMENT, payload: id });
+    dispatch({ type: DELETE_COMMENT, payload: commentId });
   } catch (err) {
     console.log(err);
   }

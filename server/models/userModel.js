@@ -77,10 +77,7 @@ userSchema.virtual("numPosts", {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.select("-__v -passwordChangedAt")
-    .populate("numFollowers")
-    .populate("numFollowings");
-
+  this.select("-__v");
   next();
 });
 

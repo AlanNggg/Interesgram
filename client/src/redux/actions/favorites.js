@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import config from "../../config";
 import { GET_FAVORITES, ADD_FAVORITE, REMOVE_FAVORITE } from "../constants";
 
 export const getFavorites = (userId) => async (dispatch) => {

@@ -1,5 +1,6 @@
 // USER
 export const GET_USERS = "GET_USERS";
+export const GET_USER = "GET_USER";
 
 // CURRENT USER
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -37,6 +38,9 @@ export const GET_USER_COMMENTS = "GET_USER_COMMENTS";
 
 export const CREATE_COMMENT = "CREATE_COMMENT";
 export const DELETE_COMMENT = "DELETE_COMMENT";
+
+// AUTH
+export const AUTH_ERROR = "AUTH_ERROR";
 
 // MESSAGE
 export const CREATE_MESSAGE = "CREATE_MESSAGE";

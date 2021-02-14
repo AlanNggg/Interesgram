@@ -8,10 +8,10 @@ exports.getAllFollows = async (req, res, next) => {
     if (req.params.userId) {
       if (req.path === "/followings") {
         filter = { follower: req.params.userId };
-        query = query.populate("following");
+        query = query.populate("following").select("-follower");
       } else if (req.path === "/followers") {
         filter = { following: req.params.userId };
-        query = query.populate("follower");
+        query = query.populate("follower").select("-following");
       } else {
         filter = {
           $or: [

@@ -54,7 +54,7 @@ exports.getAllPosts = async (req, res, next) => {
     let filter = {};
     if (req.params.userId) filter = { author: req.params.userId };
     // author name, highest views, highest likes, createdAt
-    const queryObj = new QueryFunctions(Post.find(), req.query)
+    const queryObj = new QueryFunctions(Post.find(filter), req.query)
       .filter(true)
       .sort()
       .select();

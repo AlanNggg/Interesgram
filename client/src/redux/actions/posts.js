@@ -7,6 +7,8 @@ import {
   DELETE_POST,
 } from "../constants";
 
+axios.defaults.withCredentials = true;
+
 export const getPosts = () => async (dispatch) => {
   try {
     const res = await axios.get(`${config.SERVER_URL}/api/v1/posts`);

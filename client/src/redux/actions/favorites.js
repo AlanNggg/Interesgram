@@ -2,6 +2,8 @@ import axios from "axios";
 import config from "../../config";
 import { GET_FAVORITES, ADD_FAVORITE, REMOVE_FAVORITE } from "../constants";
 
+axios.defaults.withCredentials = true;
+
 export const getFavorites = (userId) => async (dispatch) => {
   try {
     const res = await axios.get(
@@ -26,13 +28,13 @@ export const addFavorite = (postId) => async (dispatch) => {
   }
 };
 
-export const removeFavorite = (id) => async (dispatch) => {
+export const removeFavorite = (favoriteId) => async (dispatch) => {
   try {
     const res = await axios.delete(
-      `${config.SERVER_URL}/api/v1/favorites/${id}`
+      `${config.SERVER_URL}/api/v1/favorites/${favoriteId}`
     );
 
-    dispatch({ type: REMOVE_FAVORITE, payload: id });
+    dispatch({ type: REMOVE_FAVORITE, payload: favoriteId });
   } catch (err) {
     console.log(err);
   }

@@ -1,5 +1,6 @@
 const Follow = require("../models/followModel");
 const QueryFunctions = require("../utils/queryFunctions");
+const error = require("../utils/CustomError");
 
 exports.getAllFollows = async (req, res, next) => {
   try {
@@ -64,7 +65,7 @@ exports.removeFollow = async (req, res, next) => {
     const follow = await Follow.findByIdAndDelete(req.params.id);
 
     if (!follow) {
-      return next(new AppError("No document found with that ID", 404));
+      return next(new error("No document found with that ID", 404));
     }
 
     res.status(200).json({

@@ -1,15 +1,19 @@
 import React, { Component } from "react";
 import { Row, Col, Form, Button, Card } from "react-bootstrap";
 import "./UpdateProfile.css";
+import config from "../../config";
 import { connect } from "react-redux";
+import { updateCurrentUser } from "../../redux/actions/auth";
+import { getUserByUsername } from "../../redux/actions/users";
+import { getCurrentUser } from "../../redux/actions/auth";
 
 class UpdateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: props.auth.name,
-      info: props.auth.info,
-      avator: props.auth.avator,
+      name: props.auth.user.name,
+      info: props.auth.user.info,
+      avator: props.auth.user.avator,
       newAvatorPreview: null,
       newAvator: null,
     };
@@ -20,15 +24,18 @@ class UpdateProfile extends Component {
   async handleSubmit(evt) {
     evt.preventDefault();
     const { name, info, newAvator } = this.state;
-    const { save } = this.props;
 
-    console.log(newAvator);
     const form = new FormData();
     form.append("name", name);
     form.append("info", info);
     if (newAvator) form.append("avator", newAvator);
 
-    save(form);
+    // update current user's data
+    await this.props.updateCurrentUser(form);
+    // get new selected user's (current user) data on profile page
+    await this.props.getUserByUsername(name);
+    // get new current user's data and POPULATE numPosts, numFollowings and numFollowers
+    await this.props.getCurrentUser();
   }
 
   // Give Image Preview
@@ -45,14 +52,19 @@ class UpdateProfile extends Component {
   }
   render() {
     const { name, info, avator, newAvator, newAvatorPreview } = this.state;
+    console.log(`${config.SERVER_URL}/${avator}`);
     const preview = newAvator ? (
       <img
         className="UpdateProfile-avator"
-        src={newAvatorPreview}
+        src={`${newAvatorPreview}`}
         alt="User photo"
       />
     ) : (
-      <img className="UpdateProfile-avator" src={avator} alt="User photo" />
+      <img
+        className="UpdateProfile-avator"
+        src={`/img/users/${avator}`}
+        alt="User photo"
+      />
     );
     return (
       <div className="UpdateProfile">
@@ -112,4 +124,8 @@ class UpdateProfile extends Component {
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
-export default connect(mapStateToProps, {})(UpdateProfile);
+export default connect(mapStateToProps, {
+  updateCurrentUser,
+  getUserByUsername,
+  getCurrentUser,
+})(UpdateProfile);

@@ -1,6 +1,7 @@
 import {
   USER_LOADED,
   USER_LOADING,
+  USER_UPDATED,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   SIGNUP_SUCCESS,
@@ -23,6 +24,7 @@ const auth = (state = initialState, action) => {
         isLoading: true,
       };
     case USER_LOADED:
+    case USER_UPDATED:
     case LOGIN_SUCCESS:
     case SIGNUP_SUCCESS:
       return {

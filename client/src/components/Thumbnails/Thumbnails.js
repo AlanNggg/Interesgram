@@ -10,15 +10,11 @@ class Thumbnails extends Component {
   }
   render() {
     const { posts } = this.props;
-    return (
-      <div className="Thumbnails">
-        {posts.map((post) => (
-          <Col key={post.id} xs={12} className="my-3">
-            <Thumbnail post={post} />
-          </Col>
-        ))}
-      </div>
-    );
+    return posts.map((post) => (
+      <Col key={post.id} xs={12} className="my-3">
+        <Thumbnail post={post} />
+      </Col>
+    ));
   }
 }
 

@@ -17,7 +17,7 @@ class Login extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  async handleSubmit(evt) {
+  handleSubmit(evt) {
     evt.preventDefault();
 
     const { email, password } = this.state;
@@ -31,8 +31,6 @@ class Login extends Component {
 
   render() {
     if (this.props.isAuthenticated) {
-      const cookies = new Cookies();
-      console.log(cookies.get("jwt"));
       return <Redirect to="/" />;
     }
     return (

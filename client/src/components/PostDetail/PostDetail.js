@@ -43,6 +43,8 @@ class PostDetail extends Component {
       comment: this.state.comment,
     };
     this.props.createComment(newComment);
+
+    this.setState({ comment: "" });
   }
 
   render() {

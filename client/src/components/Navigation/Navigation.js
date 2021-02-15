@@ -14,6 +14,8 @@ import {
 import { Link } from "react-router-dom";
 import CreatePost from "../CreatePost/CreatePost";
 import "./Navigation.css";
+import { connect } from "react-redux";
+import { getUser } from "../../redux/actions/users";
 
 class Navigation extends Component {
   constructor(props) {
@@ -85,11 +87,7 @@ class Navigation extends Component {
                 </Modal.Header>
 
                 <Modal.Body className="py-3">
-                  <CreatePost
-                    user={user}
-                    loadPosts={loadPosts}
-                    loadUser={loadUser}
-                  />
+                  <CreatePost />
                 </Modal.Body>
               </Modal>
             </Nav.Item>
@@ -100,4 +98,7 @@ class Navigation extends Component {
   }
 }
 
-export default Navigation;
+const mapStateToProps = (state) => ({
+  users: state.users.users,
+});
+export default connect(mapStateToProps, { getUser })(Navigation);

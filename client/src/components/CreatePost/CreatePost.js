@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Row,
   Col,
@@ -10,8 +11,13 @@ import {
   Carousel,
 } from "react-bootstrap";
 import "./CreatePost.css";
-import axios from "axios";
-import config from "../../config";
+import { connect } from "react-redux";
+import {
+  createPost,
+  getPosts,
+  getPostsFromUser,
+} from "../../redux/actions/posts";
+import { getUserByUsername } from "../../redux/actions/users";
 
 class CreatePost extends Component {
   constructor(props) {
@@ -27,39 +33,28 @@ class CreatePost extends Component {
   }
 
   // Create Post
-  async handleSubmit(evt) {
-    try {
-      evt.preventDefault();
-      const { images, description } = this.state;
-      const { user, cookies, loadPosts, loadUser } = this.props;
-      const token = cookies.get("jwt");
+  handleSubmit(evt) {
+    evt.preventDefault();
 
-      console.log(images);
-      const form = new FormData();
-      form.append("description", description);
-      images.forEach((image) => form.append("images", image));
+    const { images, description } = this.state;
 
-      form.append("author", user._id);
+    const form = new FormData();
+    form.append("description", description);
+    images.forEach((image) => form.append("images", image));
 
-      const result = await axios.post(
-        `${config.SERVER_URL}/api/v1/posts`,
-        form,
-        {
-          withCredentials: true,
-          headers: {
-            authorization: token,
-          },
-        }
-      );
+    form.append("author", this.props.auth.user.id);
 
-      // this.setState({ images: [], description: "" });
+    this.props.createPost(form);
 
-      // Reload All Posts
-      await loadPosts();
-      // Reload User
-      await loadUser();
-    } catch (err) {
-      console.log(err);
+    if (this.props.location.pathname === "/") {
+      this.props.getPosts();
+    } else {
+      const name = this.props.location.pathname.split("/")[1];
+
+      this.props.getUserByUsername(name);
+
+      if (this.props.selectedUser.id === this.props.auth.user.id)
+        this.props.getPostsFromUser(this.props.selectedUser.id);
     }
   }
 
@@ -136,4 +131,13 @@ class CreatePost extends Component {
   }
 }
 
-export default CreatePost;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  selectedUser: state.users.selectedUser,
+});
+export default connect(mapStateToProps, {
+  createPost,
+  getPosts,
+  getUserByUsername,
+  getPostsFromUser,
+})(withRouter(CreatePost));

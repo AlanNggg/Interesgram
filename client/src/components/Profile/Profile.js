@@ -1,26 +1,16 @@
 import React, { Component } from "react";
-import {
-  Row,
-  Col,
-  Button,
-  Modal,
-  Container,
-  Card,
-  Carousel,
-} from "react-bootstrap";
-import jwt_decode from "jwt-decode";
-import axios from "axios";
-import config from "../../config";
+import { Row, Col, Button, Modal, Card } from "react-bootstrap";
 import UpdateProfile from "../UpdateProfile/UpdateProfile";
-import Thumbnails from "../UpdateProfile/UpdateProfile";
+import Thumbnails from "../Thumbnails/Thumbnails";
 
 import "./Profile.css";
 import { getUserByUsername } from "../../redux/actions/users";
+import { getCurrentUser } from "../../redux/actions/auth";
 import {
   getFollowings,
   getFollowers,
-  addFollowing,
-  removeFollowing,
+  addFollower,
+  removeFollower,
 } from "../../redux/actions/follows";
 import { connect } from "react-redux";
 
@@ -32,43 +22,46 @@ class Profile extends Component {
       allowEdit: false,
       isFollowing: false,
       show: false,
+      isLoading: true,
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleFollow = this.handleFollow.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { name } = this.props.match.params;
-    const {
-      auth,
-      selectedUser,
-      follows,
-      getUserByUsername,
-      getFollowings,
-      getFollowers,
-    } = this.props;
+    await this.props.getUserByUsername(name);
 
-    getUserByUsername(name);
+    if (!this.props.auth.user) await this.props.getCurrentUser();
 
-    if (selectedUser.id === auth.user.id) {
-      this.setState({
-        // For checking if current User select himself/herself
-        allowEdit: true,
-      });
-    } else {
-      getFollowings(selectedUser.id);
-      getFollowers(selectedUser.id);
+    if (this.props.selectedUser && this.props.auth.user) {
+      // if current user selects himself/herself
+      if (this.props.selectedUser.id === this.props.auth.user.id) {
+        this.setState({
+          // allow him/her to edit profile
+          allowEdit: true,
+          isLoading: false,
+        });
+      } else {
+        // get selected user's followers and followings
+        await this.props.getFollowings(this.props.selectedUser.id);
+        await this.props.getFollowers(this.props.selectedUser.id);
 
-      let isFollowing = false;
-      follows.followers.forEach((follower) => {
-        if (follower.follower.id === auth.user.id) isFollowing = true;
-      });
+        // check if current user is following selected user
+        let isFollowing = false;
+        this.props.follows.followers.forEach((follower) => {
+          // if select user has a follower with id == current user id
+          if (follower.follower.id === this.props.auth.user.id)
+            isFollowing = true;
+        });
 
-      this.setState({
-        // For checking if current User select himself/herself
-        isFollowing,
-      });
+        this.setState({
+          // set current user is following selected user or not
+          isFollowing,
+          isLoading: false,
+        });
+      }
     }
   }
 
@@ -76,94 +69,114 @@ class Profile extends Component {
     this.setState((st) => ({ show: !st.show }));
   }
 
-  handleFollow() {
+  async handleFollow() {
+    const { name } = this.props.match.params;
     const { isFollowing } = this.state;
-    const {
-      auth,
-      selectedUser,
-      follows,
-      addFollowing,
-      removeFollowing,
-    } = this.props;
 
+    // if current user is NOT following selected user
     if (!isFollowing) {
-      addFollowing(selectedUser.id);
+      // add to selected user's followers
+      await this.props.addFollower(this.props.selectedUser.id);
+
+      // get followers of selected user and POPULATE the followers'data
+      await this.props.getFollowers(this.props.selectedUser.id);
+
+      this.setState((st) => ({
+        // set current user is following selected user
+        isFollowing: true,
+      }));
     } else {
-      const follow = follows.followers.find(
-        (follower) => follower.follower.id === auth.user.id
+      // find the follow id if current user has followed selected user
+      const follow = this.props.follows.followers.find(
+        (follower) => follower.follower._id === this.props.auth.user.id
       );
-      console.log(follow.id);
-      removeFollowing(follow.id);
+
+      // if current user has followed selected user
+      if (follow) {
+        // remove current user from selected user's followers
+        await this.props.removeFollower(follow._id);
+      }
+
+      this.setState((st) => ({
+        // set current user is NOT following selected user
+        isFollowing: false,
+      }));
     }
+
+    // get new current user's data
+    await this.props.getCurrentUser();
+    // get new selected user's data
+    await this.props.getUserByUsername(name);
   }
 
   render() {
-    const { selectedUser } = this.props;
-    const { allowEdit, isFollowing, show } = this.state;
+    const { allowEdit, isFollowing, show, isLoading } = this.state;
 
     return (
-      <div className="Profile">
-        <Card>
-          <Card.Body>
-            <Card.Title className="text-sm-left">
+      !isLoading && (
+        <div className="Profile">
+          <Card>
+            <Card.Body>
+              <Card.Title className="text-sm-left">
+                <Row>
+                  <Col xs={3}>
+                    <img
+                      className="Profile-avator"
+                      src={`/img/users/${this.props.selectedUser.avator}`}
+                    />
+                  </Col>
+                  <Col>
+                    <div className="my-3">{this.props.selectedUser.name}</div>
+                    {allowEdit ? (
+                      <Button
+                        variant="outline-primary"
+                        onClick={this.handleClick}
+                        block
+                      >
+                        Edit Profile
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline-primary"
+                        onClick={this.handleFollow}
+                        block
+                      >
+                        {isFollowing ? "Unfollow" : "Follow"}
+                      </Button>
+                    )}
+
+                    <Modal
+                      show={show}
+                      dialogClassName="Profile-modal"
+                      onHide={this.handleClick}
+                    >
+                      <Modal.Header className="py-2" closeButton>
+                        <Modal.Title>Your Profile</Modal.Title>
+                      </Modal.Header>
+
+                      <Modal.Body className="py-3">
+                        <UpdateProfile />
+                      </Modal.Body>
+                    </Modal>
+                  </Col>
+                </Row>
+              </Card.Title>
+              <Card.Text className="text-sm-left my-4">
+                {this.props.selectedUser.info}
+              </Card.Text>
+
               <Row>
-                <Col xs={3}>
-                  {/* <img
-                    className="Profile-avator"
-                    src={`/img/users/${selectedUser.avator}`}
-                  /> */}
-                </Col>
-                <Col>
-                  {/* <div className="my-3">{selectedUser.name}</div> */}
-                  {allowEdit ? (
-                    <Button
-                      variant="outline-primary"
-                      onClick={this.handleClick}
-                      block
-                    >
-                      Edit Profile
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline-primary"
-                      onClick={this.handleFollow}
-                      block
-                    >
-                      {isFollowing ? "Unfollow" : "Follow"}
-                    </Button>
-                  )}
-
-                  <Modal
-                    show={show}
-                    dialogClassName="Profile-modal"
-                    onHide={this.handleClick}
-                  >
-                    <Modal.Header className="py-2" closeButton>
-                      <Modal.Title>Your Profile</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body className="py-3">
-                      <UpdateProfile />
-                    </Modal.Body>
-                  </Modal>
-                </Col>
+                <Col>Posts {this.props.selectedUser.numPosts}</Col>
+                <Col>Followers {this.props.selectedUser.numFollowers}</Col>
+                <Col>Following {this.props.selectedUser.numFollowings}</Col>
               </Row>
-            </Card.Title>
-            <Card.Text className="text-sm-left my-4">
-              {/* {selectedUser.info} */}
-            </Card.Text>
-
-            <Row>
-              {/* <Col>Posts {selectedUser.numPosts}</Col>
-              <Col>Followers {selectedUser.numFollowers}</Col>
-              <Col>Following {selectedUser.numFollowings}</Col> */}
-            </Row>
-          </Card.Body>
-        </Card>
-        <Row md={3} className="Profile-thumbnails">
-          {/* <Thumbnails userId={selectedUser.id} /> */}
-        </Row>
-      </div>
+            </Card.Body>
+          </Card>
+          <Row md={3} className="Profile-thumbnails">
+            <Thumbnails userId={this.props.selectedUser.id} />
+          </Row>
+        </div>
+      )
     );
   }
 }
@@ -175,9 +188,10 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
+  getCurrentUser,
   getUserByUsername,
   getFollowings,
   getFollowers,
-  addFollowing,
-  removeFollowing,
+  addFollower,
+  removeFollower,
 })(Profile);

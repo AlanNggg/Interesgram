@@ -2,6 +2,7 @@ import {
   GET_FOLLOWINGS,
   GET_FOLLOWERS,
   ADD_FOLLOWING,
+  ADD_FOLLOWER,
   REMOVE_FOLLOWING,
   REMOVE_FOLLOWER,
 } from "../constants";
@@ -14,7 +15,6 @@ const initialState = {
 const follows = (state = initialState, action) => {
   switch (action.type) {
     case GET_FOLLOWINGS:
-      console.log(action.payload.data.follows);
       return {
         ...state,
         followings: action.payload.data.follows,
@@ -33,14 +33,19 @@ const follows = (state = initialState, action) => {
       return {
         ...state,
         followings: state.followings.filter(
-          (following) => following.id !== action.payload.data.follow.id
+          (following) => following._id !== action.payload
         ),
+      };
+    case ADD_FOLLOWER:
+      return {
+        ...state,
+        followers: [...state.followers, action.payload.data.follow],
       };
     case REMOVE_FOLLOWER:
       return {
         ...state,
         followers: state.followers.filter(
-          (follower) => follower.id !== action.payload.data.follow.id
+          (follower) => follower._id !== action.payload
         ),
       };
     default:

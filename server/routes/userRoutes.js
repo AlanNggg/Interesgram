@@ -23,20 +23,20 @@ router.patch("/resetPassword/:token", authController.resetPassword);
 router.use(authController.authorization);
 
 router.patch(
-  "/update",
+  "/updateCurrentUser",
   userController.uploadAvator,
   userController.resizeAvator,
   userController.updateUser
 );
 
 router
+  .route("/currentUser")
+  .get(userController.getCurrentUser, userController.getUser);
+
+router
   .route("/")
   .get(userController.getAllUsers)
   .post(userController.createUser);
-
-router
-  .route("/currentUser")
-  .get(userController.getCurrentUser, userController.getUser);
 
 router.route("/:id").get(userController.getUser);
 router.route("/by/username/:name").get(userController.getUserByUsername);

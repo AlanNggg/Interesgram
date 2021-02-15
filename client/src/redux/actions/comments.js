@@ -7,6 +7,8 @@ import {
   DELETE_COMMENT,
 } from "../constants";
 
+axios.defaults.withCredentials = true;
+
 export const getPostComments = (postId) => async (dispatch) => {
   try {
     const res = await axios.get(

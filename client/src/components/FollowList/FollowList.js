@@ -24,7 +24,7 @@ class FollowList extends Component {
   }
   render() {
     const { follows, typeOfList } = this.props;
-    console.log(follows);
+
     return (
       <div className="FollowList">
         <Card>
@@ -40,7 +40,7 @@ class FollowList extends Component {
                   >
                     <Card.Title className="text-sm-left">
                       <img
-                        src={`${config.SERVER_URL}/img/users/${following.following.avator}`}
+                        src={`/img/users/${following.following.avator}`}
                         className="FollowList-avatar"
                       />
                       {following.following.name}
@@ -57,7 +57,7 @@ class FollowList extends Component {
                   >
                     <Card.Title className="text-sm-left">
                       <img
-                        src={`${config.SERVER_URL}/img/users/${follower.follower.avator}`}
+                        src={`/img/users/${follower.follower.avator}`}
                         className="FollowList-avatar"
                       />
                       {follower.follower.name}

@@ -4,6 +4,7 @@ import config from "../../config";
 import {
   USER_LOADED,
   USER_LOADING,
+  USER_UPDATED,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   SIGNUP_SUCCESS,
@@ -12,16 +13,30 @@ import {
   AUTH_ERROR,
 } from "../constants";
 
+axios.defaults.withCredentials = true;
+
 export const getCurrentUser = () => async (dispatch) => {
   dispatch({ type: USER_LOADING });
 
   try {
-    axios.defaults.withCredentials = true;
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/currentUser`
     );
 
     dispatch({ type: USER_LOADED, payload: res.data });
+  } catch (err) {
+    dispatch({ type: AUTH_ERROR });
+  }
+};
+
+export const updateCurrentUser = (user) => async (dispatch) => {
+  try {
+    const res = await axios.patch(
+      `${config.SERVER_URL}/api/v1/users/updateCurrentUser`,
+      user
+    );
+
+    dispatch({ type: USER_UPDATED, payload: res.data });
   } catch (err) {
     dispatch({ type: AUTH_ERROR });
   }
@@ -37,7 +52,6 @@ export const login = (email, password) => async (dispatch) => {
   const body = JSON.stringify({ email, password });
 
   try {
-    axios.defaults.withCredentials = true;
     const res = await axios.post(
       `${config.SERVER_URL}/api/v1/users/login`,
       body,

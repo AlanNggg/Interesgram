@@ -21,7 +21,7 @@ const posts = (state = initialState, action) => {
     case CREATE_POST:
       return {
         ...state,
-        posts: [...state.posts, action.payload.data.post],
+        posts: [action.payload.data.post, ...state.posts],
       };
 
     case DELETE_POST:

@@ -4,9 +4,12 @@ import {
   GET_FOLLOWINGS,
   GET_FOLLOWERS,
   ADD_FOLLOWING,
+  ADD_FOLLOWER,
   REMOVE_FOLLOWING,
   REMOVE_FOLLOWER,
 } from "../constants";
+
+axios.defaults.withCredentials = true;
 
 export const getFollowings = (userId) => async (dispatch) => {
   try {
@@ -51,6 +54,18 @@ export const removeFollowing = (followId) => async (dispatch) => {
     );
 
     dispatch({ type: REMOVE_FOLLOWING, payload: followId });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const addFollower = (userId) => async (dispatch) => {
+  try {
+    const res = await axios.post(`${config.SERVER_URL}/api/v1/follows`, {
+      following: userId,
+    });
+
+    dispatch({ type: ADD_FOLLOWER, payload: res.data });
   } catch (err) {
     console.log(err);
   }

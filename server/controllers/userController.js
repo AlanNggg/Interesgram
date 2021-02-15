@@ -143,6 +143,10 @@ exports.createUser = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
+    if (req.body.password || req.body.passwordConfirm) {
+      return next(new error("This route is not for password updates!"));
+    }
+
     if (req.file) req.body.avator = req.file.filename;
 
     console.log(req.body, req.file);

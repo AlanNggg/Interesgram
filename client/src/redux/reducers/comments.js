@@ -21,7 +21,7 @@ const comments = (state = initialState, action) => {
     case CREATE_COMMENT:
       return {
         ...state,
-        comments: [...state.comments, action.payload],
+        comments: [...state.comments, action.payload.data.comment],
       };
 
     case DELETE_COMMENT:

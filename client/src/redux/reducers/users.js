@@ -2,7 +2,7 @@ import { GET_USERS, GET_USER } from "../constants";
 
 const initialState = {
   users: [],
-  selectUser: null,
+  selectedUser: null,
   userLoaded: 0,
 };
 

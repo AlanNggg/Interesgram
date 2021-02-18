@@ -5,17 +5,28 @@ import { getPosts } from "../../redux/actions/posts";
 import { connect } from "react-redux";
 
 class Posts extends Component {
-  componentDidMount() {
-    this.props.getPosts();
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoading: true,
+    };
   }
+  async componentDidMount() {
+    await this.props.getPosts();
+    this.setState({ isLoading: false });
+  }
+
   render() {
-    const { posts } = this.props;
+    const { isLoading } = this.state;
     return (
-      <div className="Posts">
-        {posts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-      </div>
+      !isLoading && (
+        <div className="Posts">
+          {this.props.posts.map((post) => (
+            <Post key={post.id} post={post} />
+          ))}
+        </div>
+      )
     );
   }
 }

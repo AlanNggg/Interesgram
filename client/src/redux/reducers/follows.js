@@ -33,7 +33,7 @@ const follows = (state = initialState, action) => {
       return {
         ...state,
         followings: state.followings.filter(
-          (following) => following._id !== action.payload
+          (following) => following.id !== action.payload
         ),
       };
     case ADD_FOLLOWER:
@@ -45,7 +45,7 @@ const follows = (state = initialState, action) => {
       return {
         ...state,
         followers: state.followers.filter(
-          (follower) => follower._id !== action.payload
+          (follower) => follower.id !== action.payload
         ),
       };
     default:

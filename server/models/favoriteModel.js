@@ -1,23 +1,40 @@
 const mongoose = require("mongoose");
 
-const favoriteSchema = mongoose.Schema({
-  user: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    required: true,
+const favoriteSchema = mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    post: {
+      type: mongoose.Types.ObjectId,
+      ref: "Post",
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
-  post: {
-    type: mongoose.Types.ObjectId,
-    ref: "Post",
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 // favoriteSchema.index({ user: 1, post: 1 }, { unique: true });
+
+favoriteSchema.post("save", async function (doc, next) {
+  // Call the populate on a DOC NEED TO CALL execPopulate
+  await doc
+    .populate({
+      path: "post",
+      select: "-__v",
+    })
+    .execPopulate();
+  next();
+});
 
 favoriteSchema.pre(/^find/, function (next) {
   this.populate({

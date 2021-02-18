@@ -1,25 +1,45 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Col } from "react-bootstrap";
 import Thumbnail from "../Thumbnail/Thumbnail";
-import { getPostsFromUser } from "../../redux/actions/posts";
+import { getFavorites, getPostsFromUser } from "../../redux/actions/posts";
 import { connect } from "react-redux";
 
 class Thumbnails extends Component {
   componentDidMount() {
-    this.props.getPostsFromUser(this.props.userId);
+    if (this.props.tab === "posts") {
+      this.props.getPostsFromUser(this.props.selectedUser.id);
+    } else if (this.props.tab === "favorites") {
+      this.props.getFavorites(this.props.selectedUser.id);
+    }
   }
   render() {
-    const { posts } = this.props;
-    return posts.map((post) => (
-      <Col key={post.id} xs={12} className="my-3">
-        <Thumbnail post={post} />
-      </Col>
-    ));
+    const { tab, posts, favorites } = this.props;
+
+    return tab === "posts"
+      ? posts.map((post) => (
+          <Col key={post.id} xs={12} className="my-3">
+            <Link className="text-dark" to={`/post/${post.id}`}>
+              <Thumbnail post={post} />
+            </Link>
+          </Col>
+        ))
+      : favorites.map((favorite) => (
+          <Col key={favorite.post.id} xs={12} className="my-3">
+            <Link className="text-dark" to={`/post/${favorite.post.id}`}>
+              <Thumbnail post={favorite.post} />
+            </Link>
+          </Col>
+        ));
   }
 }
 
 const mapStateToProps = (state) => ({
   posts: state.posts.posts,
+  selectedUser: state.users.selectedUser,
+  favorites: state.posts.favorites,
 });
 
-export default connect(mapStateToProps, { getPostsFromUser })(Thumbnails);
+export default connect(mapStateToProps, { getPostsFromUser, getFavorites })(
+  Thumbnails
+);

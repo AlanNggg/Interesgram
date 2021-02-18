@@ -29,6 +29,13 @@ postSchema.virtual("comments", {
   localField: "_id",
 });
 
+postSchema.virtual("numLikes", {
+  ref: "Favorite",
+  foreignField: "post",
+  localField: "_id",
+  count: true,
+});
+
 postSchema.pre(/^find/, function (next) {
   this.populate({
     path: "author",

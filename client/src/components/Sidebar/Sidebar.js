@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Container, Nav, Row, Col, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Cookies from "js-cookie";
 import FollowList from "../FollowList/FollowList";
 import "./Sidebar.css";
 import config from "../../config";
@@ -47,55 +46,46 @@ class Sidebar extends Component {
 
     const { show, typeOfList } = this.state;
     return (
-      <div className="Sidebar">
-        <Container>
-          <Row>
-            <img
-              className="Sidebar-avator"
-              src={`${config.SERVER_URL}/img/users/${user.avator}`}
-              alt="User photo"
-            />
-          </Row>
-          <Row>
-            <Col>
-              <h2>{user.name}</h2>
-            </Col>
-          </Row>
-          <Row md className="py-2 border-bottom sidebar-info">
-            <Col lg>
-              <h4>{user.numPosts}</h4>
-              <span>Posts</span>
-            </Col>
+      <div className="Sidebar px-3">
+        <img
+          className="Sidebar-avator"
+          src={`${config.SERVER_URL}/img/users/${user.avator}`}
+          alt="User photo"
+        />
+        <h2>{user.name}</h2>
+        <Row md className="py-2 border-bottom">
+          <Col lg>
+            <h4>{user.numPosts}</h4>
+            <span>Posts</span>
+          </Col>
 
-            <Col lg onClick={() => this.handleShowMore("followers")}>
-              <h4>{user.numFollowers}</h4>
-              <span>Followers</span>
-            </Col>
+          <Col lg onClick={() => this.handleShowMore("followers")}>
+            <h4>{user.numFollowers}</h4>
+            <span>Followers</span>
+          </Col>
 
-            <Col lg onClick={() => this.handleShowMore("followings")}>
-              <h4>{user.numFollowings}</h4>
-              <span>Following</span>
-            </Col>
-          </Row>
-          <Row>
-            <Nav.Link as={Link} to="/">
-              Home
-            </Nav.Link>
-          </Row>
-          <Row>
-            <Nav.Link as={Link} to="/discover">
-              Discover
-            </Nav.Link>
-          </Row>
-          <Row>
-            <Nav.Link as={Link} to={`/${user.name}`}>
-              Profile
-            </Nav.Link>
-          </Row>
-          <Row>
-            <Nav.Link onClick={this.logout}>Logout</Nav.Link>
-          </Row>
-        </Container>
+          <Col lg onClick={() => this.handleShowMore("followings")}>
+            <h4>{user.numFollowings}</h4>
+            <span>Following</span>
+          </Col>
+        </Row>
+
+        <Nav.Link as={Link} to="/" className="px-0">
+          Home
+        </Nav.Link>
+
+        <Nav.Link as={Link} to="/discover" className="px-0">
+          Discover
+        </Nav.Link>
+
+        <Nav.Link as={Link} to={`/${user.name}`} className="px-0">
+          Profile
+        </Nav.Link>
+
+        <Nav.Link onClick={this.logout} className="px-0">
+          Logout
+        </Nav.Link>
+
         <Modal show={show} onHide={this.handleClose}>
           <Modal.Header className="py-2" closeButton />
           <Modal.Body className="py-3">

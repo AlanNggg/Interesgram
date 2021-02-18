@@ -22,7 +22,6 @@ mongoose.connect(DB, {
 const deleteData = async () => {
   try {
     await User.deleteMany({});
-    console.log("Delete Successfully");
   } catch (err) {
     console.log(err);
   }

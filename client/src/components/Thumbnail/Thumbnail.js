@@ -1,66 +1,25 @@
 import React, { Component } from "react";
-import { Container, Card, Carousel, Nav, Modal } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import PostDetail from "../PostDetail/PostDetail";
+import { Card, Carousel } from "react-bootstrap";
 import "./Thumbnail.css";
 
 class Thumbnail extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      show: false,
-    };
-    this.handleShowMore = this.handleShowMore.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
-
-  handleShowMore() {
-    this.setState({ show: true });
-  }
-  handleClose() {
-    this.setState({ show: false });
   }
 
   render() {
     const { post } = this.props;
-    const { show } = this.state;
 
     return (
       <div className="Thumbnail">
-        <Card onClick={this.handleShowMore}>
+        <Card>
           {post.images.length > 0 && (
-            <Carousel>
-              {post.images.map((image) => {
-                return (
-                  <Carousel.Item key={image}>
-                    <img
-                      className="d-block w-100"
-                      src={`/img/posts/${image}`}
-                    />
-                  </Carousel.Item>
-                );
-              })}
-            </Carousel>
+            <Card.Img src={`/img/posts/${post.images[0]}`} />
           )}
           <Card.Body>
             <Card.Text>{post.description}</Card.Text>
-
-            <Card.Text className="post-icons text-sm-left"></Card.Text>
           </Card.Body>
         </Card>
-        <Modal
-          show={show}
-          dialogClassName={
-            post.images.length > 0 ? "Post-modal" : "Post-modal-no-images"
-          }
-          onHide={this.handleClose}
-        >
-          <Modal.Header className="py-2" closeButton />
-          <Modal.Body className="py-3">
-            <PostDetail post={post} />
-          </Modal.Body>
-        </Modal>
       </div>
     );
   }

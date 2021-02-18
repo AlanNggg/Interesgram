@@ -8,7 +8,15 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .get(favoriteController.getAllFavorites)
-  .post(authController.authorization, favoriteController.addFavorite);
+  .post(authController.authorization, favoriteController.addFavorite)
+  .delete(
+    authController.authorization,
+    favoriteController.removeFavoriteByPostId
+  );
+
+router
+  .route("/favoriteOrNot")
+  .get(authController.authorization, favoriteController.favoriteOrNot);
 
 router
   .route("/:id")

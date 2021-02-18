@@ -1,5 +1,5 @@
 .Profile {
-  max-width: 600px;
+  max-width: 975px;
   margin: 16px auto;
   position: relative;
 }
@@ -10,9 +10,28 @@
   width: 100%;
   height: auto;
   margin-right: 16px;
+  border: 1px solid #333;
 }
 
 .Profile-modal {
   max-width: 650px;
   box-sizing: border-box;
+}
+
+@media screen and (min-width: 600px) {
+  .Profile-header {
+    display: inline-block;
+  }
+  .Profile-username {
+    display: inline-block;
+  }
+
+  .Profile-avator {
+    max-width: 150px;
+  }
+
+  .Profile-btn {
+    display: inline-block;
+    width: 150px;
+  }
 }

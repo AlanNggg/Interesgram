@@ -35,7 +35,6 @@ exports.resizeImages = async (req, res, next) => {
       // req.params.id PATCH -${Date.now()}-${i + 1}
       const filename = `post-${uuid.v4()}-${Date.now()}.jpeg`;
 
-      console.log(filename);
       await sharp(el.buffer)
         .resize(2000, 1333)
         .toFormat("jpeg")
@@ -59,7 +58,7 @@ exports.getAllPosts = async (req, res, next) => {
       .sort()
       .select();
 
-    const posts = await queryObj.query;
+    const posts = await queryObj.query.populate("numLikes");
 
     res.status(200).json({
       status: "success",
@@ -74,10 +73,12 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPost = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate({
-      path: "comments",
-      select: "-__v",
-    });
+    const post = await Post.findById(req.params.id)
+      .populate({
+        path: "comments",
+        select: "-__v",
+      })
+      .populate("numLikes");
 
     res.status(200).json({
       status: "success",

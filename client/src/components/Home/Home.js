@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Navbar, Container, Row, Col } from "react-bootstrap";
 import Posts from "../Posts/Posts";
 import Sidebar from "../Sidebar/Sidebar";
 import "./Home.css";
@@ -11,13 +11,6 @@ class Home extends Component {
     super(props);
   }
 
-  // componentDidMount() {
-  //   if (!this.props.user) this.props.history.push("/");
-  // }
-
-  // componentDidUpdate() {
-  //   if (!this.props.user) this.props.history.push("/");
-  // }
   render() {
     return (
       <div className="Home">

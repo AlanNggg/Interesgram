@@ -4,9 +4,11 @@ import { GET_USERS, GET_USER } from "../constants";
 
 axios.defaults.withCredentials = true;
 
-export const getUsers = () => async (dispatch) => {
+export const getUsers = (username) => async (dispatch) => {
   try {
-    const res = await axios.get(`${config.SERVER_URL}/api/v1/users`);
+    const res = await axios.get(
+      `${config.SERVER_URL}/api/v1/users?name=${username}`
+    );
 
     dispatch({ type: GET_USERS, payload: res.data });
   } catch (err) {

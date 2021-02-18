@@ -1,5 +1,7 @@
 // USER
+// Get users when searching
 export const GET_USERS = "GET_USERS";
+// Get selected user for looking his/her profile
 export const GET_USER = "GET_USER";
 
 // CURRENT USER
@@ -11,31 +13,45 @@ export const SIGNUP_FAIL = "SIGNUP_FAIL";
 
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
+// Load current user
 export const USER_LOADED = "USER_LOADED";
 export const USER_LOADING = "USER_LOADING";
 
+// Update current user
 export const USER_UPDATED = "USER_UPDATED";
 
 // FOLLOW
+// Get current user or selected user's followers and followings
 export const GET_FOLLOWERS = "GET_FOLLOWERS";
 export const GET_FOLLOWINGS = "GET_FOLLOWINGS";
+// Add current user's followings and add selected user's follower
 export const ADD_FOLLOWING = "ADD_FOLLOWING";
 export const ADD_FOLLOWER = "ADD_FOLLOWER";
+// Remove current user's followers
 export const REMOVE_FOLLOWING = "REMOVE_FOLLOWING";
 export const REMOVE_FOLLOWER = "REMOVE_FOLLOWER";
 
 // POST
+// Get all posts
 export const GET_POSTS = "GET_POSTS";
+// Get posts from current user or selected user
 export const GET_USER_POSTS = "GET_USER_POSTS";
+// Create a post by current user
+export const GET_POST = "GET_POST";
 export const CREATE_POST = "CREATE_POST";
 export const DELETE_POST = "DELETE_POST";
 
-// FAVORITE
+// Get user's favorites
 export const GET_FAVORITES = "GET_FAVORITES";
 export const ADD_FAVORITE = "ADD_FAVORITE";
 export const REMOVE_FAVORITE = "REMOVE_FAVORITE";
+// Get post's likes
+export const GET_POST_LIKES = "GET_POST_LIKES";
+export const ADD_LIKE = "ADD_LIKE";
+export const REMOVE_LIKE = "REMOVE_LIKE";
 
 // COMMENT
+// Get comments from a post
 export const GET_POST_COMMENTS = "GET_POST_COMMENTS";
 export const GET_USER_COMMENTS = "GET_USER_COMMENTS";
 

@@ -52,7 +52,7 @@ class UpdateProfile extends Component {
   }
   render() {
     const { name, info, avator, newAvator, newAvatorPreview } = this.state;
-    console.log(`${config.SERVER_URL}/${avator}`);
+
     const preview = newAvator ? (
       <img
         className="UpdateProfile-avator"

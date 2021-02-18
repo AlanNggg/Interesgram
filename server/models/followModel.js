@@ -1,21 +1,27 @@
 const mongoose = require("mongoose");
 
-const followSchema = mongoose.Schema({
-  follower: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    required: true,
+const followSchema = mongoose.Schema(
+  {
+    follower: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    following: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
-  following: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 // followSchema.pre(/^find/, function (next) {
 //   this.populate({

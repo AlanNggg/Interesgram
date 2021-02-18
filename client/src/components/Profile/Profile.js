@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Row, Col, Button, Modal, Card } from "react-bootstrap";
+import { Row, Col, Button, Modal, Card, Tabs, Tab } from "react-bootstrap";
 import UpdateProfile from "../UpdateProfile/UpdateProfile";
 import Thumbnails from "../Thumbnails/Thumbnails";
-
 import "./Profile.css";
 import { getUserByUsername } from "../../redux/actions/users";
 import { getCurrentUser } from "../../redux/actions/auth";
@@ -50,11 +49,15 @@ class Profile extends Component {
 
         // check if current user is following selected user
         let isFollowing = false;
-        this.props.follows.followers.forEach((follower) => {
-          // if select user has a follower with id == current user id
-          if (follower.follower.id === this.props.auth.user.id)
-            isFollowing = true;
-        });
+        const follow = this.props.follows.followers.find(
+          (follower) =>
+            // if select user has a follower with id == current user id
+            follower.follower.id === this.props.auth.user.id
+        );
+
+        if (follow) {
+          isFollowing = true;
+        }
 
         this.setState({
           // set current user is following selected user or not
@@ -88,13 +91,13 @@ class Profile extends Component {
     } else {
       // find the follow id if current user has followed selected user
       const follow = this.props.follows.followers.find(
-        (follower) => follower.follower._id === this.props.auth.user.id
+        (follower) => follower.follower.id === this.props.auth.user.id
       );
 
       // if current user has followed selected user
       if (follow) {
         // remove current user from selected user's followers
-        await this.props.removeFollower(follow._id);
+        await this.props.removeFollower(follow.id);
       }
 
       this.setState((st) => ({
@@ -117,64 +120,87 @@ class Profile extends Component {
         <div className="Profile">
           <Card>
             <Card.Body>
-              <Card.Title className="text-sm-left">
-                <Row>
-                  <Col xs={3}>
-                    <img
-                      className="Profile-avator"
-                      src={`/img/users/${this.props.selectedUser.avator}`}
-                    />
-                  </Col>
-                  <Col>
-                    <div className="my-3">{this.props.selectedUser.name}</div>
-                    {allowEdit ? (
-                      <Button
-                        variant="outline-primary"
-                        onClick={this.handleClick}
-                        block
-                      >
-                        Edit Profile
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline-primary"
-                        onClick={this.handleFollow}
-                        block
-                      >
-                        {isFollowing ? "Unfollow" : "Follow"}
-                      </Button>
-                    )}
-
-                    <Modal
-                      show={show}
-                      dialogClassName="Profile-modal"
-                      onHide={this.handleClick}
-                    >
-                      <Modal.Header className="py-2" closeButton>
-                        <Modal.Title>Your Profile</Modal.Title>
-                      </Modal.Header>
-
-                      <Modal.Body className="py-3">
-                        <UpdateProfile />
-                      </Modal.Body>
-                    </Modal>
-                  </Col>
-                </Row>
-              </Card.Title>
-              <Card.Text className="text-sm-left my-4">
-                {this.props.selectedUser.info}
-              </Card.Text>
-
               <Row>
-                <Col>Posts {this.props.selectedUser.numPosts}</Col>
-                <Col>Followers {this.props.selectedUser.numFollowers}</Col>
-                <Col>Following {this.props.selectedUser.numFollowings}</Col>
+                <Col xs={3}>
+                  <img
+                    className="Profile-avator"
+                    src={`/img/users/${this.props.selectedUser.avator}`}
+                  />
+                </Col>
+                <Col xs={9}>
+                  <Row>
+                    <Col xs={12} className="mt-3">
+                      <div className="Profile-username mb-3 mr-4">
+                        {this.props.selectedUser.name}
+                      </div>
+                      {allowEdit ? (
+                        <Button
+                          variant="outline-primary"
+                          className="Profile-btn"
+                          onClick={this.handleClick}
+                          block
+                        >
+                          Edit Profile
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline-primary"
+                          className="Profile-btn"
+                          onClick={this.handleFollow}
+                          block
+                        >
+                          {isFollowing ? "Unfollow" : "Follow"}
+                        </Button>
+                      )}
+
+                      <Modal
+                        show={show}
+                        dialogClassName="Profile-modal"
+                        onHide={this.handleClick}
+                      >
+                        <Modal.Header className="py-2" closeButton>
+                          <Modal.Title>Your Profile</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body className="py-3">
+                          <UpdateProfile />
+                        </Modal.Body>
+                      </Modal>
+                    </Col>
+                    <Col xs={12} className="mt-3">
+                      <Card.Text className="text-sm-left">
+                        {this.props.selectedUser.info}
+                      </Card.Text>
+                    </Col>
+                    <Col xs={12} className="mt-3">
+                      <Row>
+                        <Col>Posts {this.props.selectedUser.numPosts}</Col>
+                        <Col>
+                          Followers {this.props.selectedUser.numFollowers}
+                        </Col>
+                        <Col>
+                          Following {this.props.selectedUser.numFollowings}
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Col>
               </Row>
             </Card.Body>
           </Card>
-          <Row md={3} className="Profile-thumbnails">
-            <Thumbnails userId={this.props.selectedUser.id} />
-          </Row>
+
+          <Tabs defaultActiveKey="posts" className="nav-fill">
+            <Tab eventKey="posts" title="posts">
+              <Row md={3} className="Profile-thumbnails">
+                <Thumbnails tab="posts" />
+              </Row>
+            </Tab>
+            <Tab eventKey="favorites" title="favorites">
+              <Row md={3} className="Profile-thumbnails">
+                <Thumbnails tab="favorites" />
+              </Row>
+            </Tab>
+          </Tabs>
         </div>
       )
     );

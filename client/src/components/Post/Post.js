@@ -1,39 +1,68 @@
 import React, { Component } from "react";
-import { Container, Card, Carousel, Nav, Modal } from "react-bootstrap";
+import { Card, Carousel, Nav, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import {
   faHeart as farHeart,
   faComment as farComment,
 } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as fasHeart } from "@fortawesome/free-solid-svg-icons";
 import PostDetail from "../PostDetail/PostDetail";
 import "./Post.css";
+import axios from "axios";
+import config from "../../config";
+
+axios.defaults.withCredentials = true;
 
 class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      isFavorite: false,
     };
-    this.handleShowMore = this.handleShowMore.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleAddFavorite = this.handleAddFavorite.bind(this);
+
+    this.handleFavorite = this.handleFavorite.bind(this);
   }
 
-  handleShowMore() {
-    this.setState({ show: true });
+  async componentDidMount() {
+    const { post } = this.props;
+    // check current user liked it or not
+    const res = await axios.get(
+      `${config.SERVER_URL}/api/v1/posts/${post.id}/favorites/favoriteOrNot`
+    );
+    const { isFavorite } = res.data.data;
+    this.setState({ isFavorite });
   }
-  handleClose() {
-    this.setState({ show: false });
-  }
-  handleAddFavorite(evt) {
+
+  async handleFavorite(evt) {
     evt.preventDefault();
+    const { isFavorite } = this.state;
+    const { post } = this.props;
+
+    try {
+      if (!isFavorite) {
+        await axios.post(`${config.SERVER_URL}/api/v1/favorites`, {
+          post: post.id,
+        });
+
+        this.setState({ isFavorite: true });
+      } else {
+        await axios.delete(`${config.SERVER_URL}/api/v1/favorites`, {
+          data: {
+            post: post.id,
+          },
+        });
+
+        this.setState({ isFavorite: false });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render() {
     const { post } = this.props;
-    const { show } = this.state;
+    const { isFavorite } = this.state;
 
     return (
       <div className="Post">
@@ -68,24 +97,19 @@ class Post extends Component {
               {post.description}
             </Card.Text>
             <Card.Text className="post-icons text-sm-left">
-              <a className="mr-3" onClick={this.handleAddFavorite}>
-                <FontAwesomeIcon icon={farHeart} size="lg" />
-              </a>
-              <a className="mr-3" onClick={this.handleShowMore}>
-                <FontAwesomeIcon icon={farComment} size="lg" />
-              </a>
-              <Modal
-                show={show}
-                dialogClassName={
-                  post.images.length > 0 ? "Post-modal" : "Post-modal-no-images"
-                }
-                onHide={this.handleClose}
+              <Link
+                to="#"
+                className="mr-3 text-dark"
+                onClick={this.handleFavorite}
               >
-                <Modal.Header className="py-2" closeButton />
-                <Modal.Body className="py-3">
-                  <PostDetail post={post} />
-                </Modal.Body>
-              </Modal>
+                <FontAwesomeIcon
+                  icon={isFavorite ? fasHeart : farHeart}
+                  size="lg"
+                />
+              </Link>
+              <Link className="mr-3 text-dark" to={`/post/${post.id}`}>
+                <FontAwesomeIcon icon={farComment} size="lg" />
+              </Link>
             </Card.Text>
           </Card.Body>
         </Card>
@@ -93,5 +117,4 @@ class Post extends Component {
     );
   }
 }
-
 export default Post;

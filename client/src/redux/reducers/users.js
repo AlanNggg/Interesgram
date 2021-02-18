@@ -3,7 +3,6 @@ import { GET_USERS, GET_USER } from "../constants";
 const initialState = {
   users: [],
   selectedUser: null,
-  userLoaded: 0,
 };
 
 const users = (state = initialState, action) => {
@@ -11,8 +10,7 @@ const users = (state = initialState, action) => {
     case GET_USERS:
       return {
         ...state,
-        users: [...state.users, action.payload.data.users],
-        userLoaded: state.userLoaded + 1,
+        users: action.payload.data.users,
       };
 
     case GET_USER:

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { Card, Nav } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
@@ -57,6 +58,8 @@ const mapStateToProps = (state) => ({
   users: state.users.users,
 });
 
-export default connect(mapStateToProps, {
-  getUsers,
-})(SearchList);
+export default withRouter(
+  connect(mapStateToProps, {
+    getUsers,
+  })(SearchList)
+);

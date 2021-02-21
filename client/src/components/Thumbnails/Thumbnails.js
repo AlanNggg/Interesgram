@@ -12,6 +12,7 @@ class Thumbnails extends Component {
     } else if (this.props.tab === "favorites") {
       this.props.getFavorites(this.props.selectedUser.id);
     }
+    console.log(this.props.selectedUser.name);
   }
   render() {
     const { tab, posts, favorites } = this.props;

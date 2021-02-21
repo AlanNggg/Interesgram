@@ -5,55 +5,45 @@ import {
   GET_USER_COMMENTS,
   CREATE_COMMENT,
   DELETE_COMMENT,
+  GET_ERRORS,
 } from "../constants";
+import catchErrors from "./catchErrors";
 
 axios.defaults.withCredentials = true;
 
-export const getPostComments = (postId) => async (dispatch) => {
-  try {
+export const getPostComments = (postId) =>
+  catchErrors(async (dispatch) => {
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/posts/${postId}/comments`
     );
 
     dispatch({ type: GET_POST_COMMENTS, payload: res.data });
-  } catch (err) {
-    console.log(err);
-  }
-};
+  });
 
-export const getUserComments = (userId) => async (dispatch) => {
-  try {
+export const getUserComments = (userId) =>
+  catchErrors(async (dispatch) => {
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/${userId}/comments`
     );
 
     dispatch({ type: GET_USER_COMMENTS, payload: res.data });
-  } catch (err) {
-    console.log(err);
-  }
-};
+  });
 
-export const createComment = (comment) => async (dispatch) => {
-  try {
+export const createComment = (comment) =>
+  catchErrors(async (dispatch) => {
     const res = await axios.post(
       `${config.SERVER_URL}/api/v1/comments`,
       comment
     );
 
     dispatch({ type: CREATE_COMMENT, payload: res.data });
-  } catch (err) {
-    console.log(err);
-  }
-};
+  });
 
-export const deleteComment = (commentId) => async (dispatch) => {
-  try {
+export const deleteComment = (commentId) =>
+  catchErrors(async (dispatch) => {
     const res = await axios.delete(
       `${config.SERVER_URL}/api/v1/comments/${commentId}`
     );
 
     dispatch({ type: DELETE_COMMENT, payload: commentId });
-  } catch (err) {
-    console.log(err);
-  }
-};
+  });

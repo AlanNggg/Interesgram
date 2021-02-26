@@ -1,32 +1,29 @@
 import React, { Component } from "react";
 import Post from "../Post/Post";
 import "./Posts.css";
+import Loader from "../Loader/Loader";
 import { getPosts } from "../../redux/actions/posts";
 import { connect } from "react-redux";
 
 class Posts extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isLoading: true,
-    };
   }
   async componentDidMount() {
     await this.props.getPosts();
-    this.setState({ isLoading: false });
   }
 
   render() {
-    const { isLoading } = this.state;
-    return (
-      !isLoading && (
-        <div className="Posts">
-          {this.props.posts.map((post) => (
-            <Post key={post.id} post={post} />
-          ))}
-        </div>
-      )
+    const { posts } = this.props;
+
+    return posts.isLoading ? (
+      <Loader />
+    ) : (
+      <div className="Posts">
+        {posts.map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
+      </div>
     );
   }
 }

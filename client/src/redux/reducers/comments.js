@@ -1,4 +1,5 @@
 import {
+  COMMENTS_LOADING,
   GET_POST_COMMENTS,
   GET_USER_COMMENTS,
   CREATE_COMMENT,
@@ -11,10 +12,16 @@ const initialState = {
 
 const comments = (state = initialState, action) => {
   switch (action.type) {
+    case COMMENTS_LOADING:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case GET_POST_COMMENTS:
     case GET_USER_COMMENTS:
       return {
         ...state,
+        isLoading: false,
         comments: action.payload.data.comments,
       };
 

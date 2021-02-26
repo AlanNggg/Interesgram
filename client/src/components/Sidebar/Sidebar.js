@@ -78,7 +78,7 @@ class Sidebar extends Component {
           Discover
         </Nav.Link>
 
-        <Nav.Link as={Link} to={`/${user.name}`} className="px-0">
+        <Nav.Link as={Link} to={`/profile/${user.name}`} className="px-0">
           Profile
         </Nav.Link>
 

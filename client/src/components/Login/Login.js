@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "./Login.css";
+import Message from "../Message/Message";
 import { connect } from "react-redux";
 import { login } from "../../redux/actions/auth";
-import Cookies from "universal-cookie";
 
 class Login extends Component {
   constructor(props) {
@@ -30,14 +30,18 @@ class Login extends Component {
   }
 
   render() {
-    if (this.props.isAuthenticated) {
+    const { messages } = this.props;
+    const { isAuthenticated } = this.props.auth;
+    if (isAuthenticated) {
       return <Redirect to="/" />;
     }
+
     return (
       <div className="Login">
         <Container fluid>
           <Row className="justify-content-center">
             <Col md={5} lg={4}>
+              {/* {messages && <Message variant="danger">{messages}</Message>} */}
               <Form>
                 <Form.Group>
                   <Form.Control
@@ -79,6 +83,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth,
+  messages: state.messages,
 });
 export default connect(mapStateToProps, { login })(Login);

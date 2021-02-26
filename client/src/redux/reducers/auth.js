@@ -33,8 +33,14 @@ const auth = (state = initialState, action) => {
         isAuthenticated: true,
         isLoading: false,
       };
-    case LOGIN_FAIL:
     case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+      };
+    case LOGIN_FAIL:
     case SIGNUP_FAIL:
     case AUTH_ERROR:
       return {

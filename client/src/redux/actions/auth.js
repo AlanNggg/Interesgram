@@ -11,6 +11,7 @@ import {
   SIGNUP_FAIL,
   LOGOUT_SUCCESS,
   AUTH_ERROR,
+  CREATE_MESSAGE,
 } from "../constants";
 
 axios.defaults.withCredentials = true;
@@ -39,6 +40,12 @@ export const updateCurrentUser = (user) => async (dispatch) => {
     dispatch({ type: USER_UPDATED, payload: res.data });
   } catch (err) {
     dispatch({ type: AUTH_ERROR });
+    dispatch({
+      type: CREATE_MESSAGE,
+      payload: err.response.data.message
+        ? err.response.data.message
+        : err.message,
+    });
   }
 };
 
@@ -61,6 +68,12 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
   } catch (err) {
     dispatch({ type: LOGIN_FAIL });
+    dispatch({
+      type: CREATE_MESSAGE,
+      payload: err.response.data.message
+        ? err.response.data.message
+        : err.message,
+    });
   }
 };
 
@@ -85,6 +98,12 @@ export const signUp = ({ name, email, password, passwordConfirm }) => async (
     dispatch({ type: SIGNUP_SUCCESS, payload: res.data });
   } catch (err) {
     dispatch({ type: SIGNUP_FAIL });
+    dispatch({
+      type: CREATE_MESSAGE,
+      payload: err.response.data.message
+        ? err.response.data.message
+        : err.message,
+    });
   }
 };
 

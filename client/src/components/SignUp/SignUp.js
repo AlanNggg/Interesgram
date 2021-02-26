@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import "./SignUp.css";
+import Message from "../Message/Message";
+import Loader from "../Loader/Loader";
 import { connect } from "react-redux";
 import { signUp } from "../../redux/actions/auth";
 
@@ -34,7 +36,9 @@ class SignUp extends Component {
     this.setState({ [evt.target.name]: evt.target.value });
   }
   render() {
-    if (this.props.isAuthenticated) {
+    const { messages } = this.props;
+    const { isLoading, isAuthenticated } = this.props.auth;
+    if (isAuthenticated) {
       return <Redirect to="/" />;
     }
     return (
@@ -42,6 +46,8 @@ class SignUp extends Component {
         <Container fluid>
           <Row className="justify-content-center">
             <Col md={5} lg={4}>
+              {messages && <Message variant="danger">{messages}</Message>}
+              {isLoading && <Loader />}
               <Form>
                 <Form.Group>
                   <Form.Control
@@ -100,6 +106,7 @@ class SignUp extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth,
+  messages: state.messages,
 });
 export default connect(mapStateToProps, { signUp })(SignUp);

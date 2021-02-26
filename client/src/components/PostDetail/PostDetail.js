@@ -120,7 +120,7 @@ class PostDetail extends Component {
                   <Col xs lg={selectedPost.images.length > 0 && 5}>
                     <Nav.Link
                       as={Link}
-                      to={`/${selectedPost.author.name}`}
+                      to={`/profile/${selectedPost.author.name}`}
                       className="px-0"
                     >
                       <Card.Title className="text-sm-left">

@@ -1,4 +1,5 @@
 // USER
+export const USERS_LOADING = "USERS_LOADING";
 // Get users when searching
 export const GET_USERS = "GET_USERS";
 // Get selected user for looking his/her profile
@@ -21,6 +22,7 @@ export const USER_LOADING = "USER_LOADING";
 export const USER_UPDATED = "USER_UPDATED";
 
 // FOLLOW
+export const FOLLOWS_LOADING = "FOLLOWS_LOADING";
 // Get current user or selected user's followers and followings
 export const GET_FOLLOWERS = "GET_FOLLOWERS";
 export const GET_FOLLOWINGS = "GET_FOLLOWINGS";
@@ -32,6 +34,7 @@ export const REMOVE_FOLLOWING = "REMOVE_FOLLOWING";
 export const REMOVE_FOLLOWER = "REMOVE_FOLLOWER";
 
 // POST
+export const POSTS_LOADING = "POSTS_LOADING";
 // Get all posts
 export const GET_POSTS = "GET_POSTS";
 // Get posts from current user or selected user
@@ -51,6 +54,7 @@ export const ADD_LIKE = "ADD_LIKE";
 export const REMOVE_LIKE = "REMOVE_LIKE";
 
 // COMMENT
+export const COMMENTS_LOADING = "COMMENTS_LOADING";
 // Get comments from a post
 export const GET_POST_COMMENTS = "GET_POST_COMMENTS";
 export const GET_USER_COMMENTS = "GET_USER_COMMENTS";
@@ -63,6 +67,7 @@ export const AUTH_ERROR = "AUTH_ERROR";
 
 // MESSAGE
 export const CREATE_MESSAGE = "CREATE_MESSAGE";
+export const REMOVE_MESSAGE = "REMOVE_MESSAGE";
 
 // ERROR
 export const GET_ERRORS = "GET_ERRORS";

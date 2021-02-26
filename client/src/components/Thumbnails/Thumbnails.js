@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Col } from "react-bootstrap";
 import Thumbnail from "../Thumbnail/Thumbnail";
@@ -12,7 +13,15 @@ class Thumbnails extends Component {
     } else if (this.props.tab === "favorites") {
       this.props.getFavorites(this.props.selectedUser.id);
     }
-    console.log(this.props.selectedUser.name);
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.selectedUser.id !== prevProps.selectedUser.id) {
+      if (this.props.tab === "posts") {
+        this.props.getPostsFromUser(this.props.selectedUser.id);
+      } else if (this.props.tab === "favorites") {
+        this.props.getFavorites(this.props.selectedUser.id);
+      }
+    }
   }
   render() {
     const { tab, posts, favorites } = this.props;
@@ -41,6 +50,6 @@ const mapStateToProps = (state) => ({
   favorites: state.posts.favorites,
 });
 
-export default connect(mapStateToProps, { getPostsFromUser, getFavorites })(
-  Thumbnails
+export default withRouter(
+  connect(mapStateToProps, { getPostsFromUser, getFavorites })(Thumbnails)
 );

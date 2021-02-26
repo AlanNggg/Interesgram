@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import { Card, Nav } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
@@ -34,7 +34,10 @@ class SearchList extends Component {
                 <Nav.Link
                   key={user.id}
                   as={Link}
-                  to={`/${user.name}`}
+                  to={`/profile/${user.name}`}
+                  onClick={() =>
+                    this.props.history.push(`/profile/${user.name}`)
+                  }
                   className="px-0"
                 >
                   <Card.Title className="text-sm-left">

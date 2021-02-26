@@ -35,7 +35,7 @@ class FollowList extends Component {
                   <Nav.Link
                     key={following.following.id}
                     as={Link}
-                    to={`/${following.following.name}`}
+                    to={`/profile/${following.following.name}`}
                     className="px-0"
                   >
                     <Card.Title className="text-sm-left">
@@ -52,7 +52,7 @@ class FollowList extends Component {
                   <Nav.Link
                     key={follower.follower.id}
                     as={Link}
-                    to={`/${follower.follower.name}`}
+                    to={`/profile/${follower.follower.name}`}
                     className="px-0"
                   >
                     <Card.Title className="text-sm-left">

@@ -1,6 +1,7 @@
 import axios from "axios";
 import config from "../../config";
 import {
+  FOLLOWS_LOADING,
   GET_FOLLOWINGS,
   GET_FOLLOWERS,
   ADD_FOLLOWING,
@@ -14,6 +15,7 @@ axios.defaults.withCredentials = true;
 
 export const getFollowings = (userId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: FOLLOWS_LOADING });
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/${userId}/follows/followings`
     );
@@ -23,6 +25,7 @@ export const getFollowings = (userId) =>
 
 export const getFollowers = (userId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: FOLLOWS_LOADING });
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/${userId}/follows/followers`
     );

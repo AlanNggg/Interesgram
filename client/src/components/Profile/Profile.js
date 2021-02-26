@@ -3,6 +3,7 @@ import { Row, Col, Button, Modal, Card, Tabs, Tab } from "react-bootstrap";
 import UpdateProfile from "../UpdateProfile/UpdateProfile";
 import Thumbnails from "../Thumbnails/Thumbnails";
 import "./Profile.css";
+import Loader from "../Loader/Loader";
 import { getUserByUsername } from "../../redux/actions/users";
 import { getCurrentUser } from "../../redux/actions/auth";
 import {
@@ -28,15 +29,12 @@ class Profile extends Component {
     this.handleFollow = this.handleFollow.bind(this);
   }
 
-  componentDidMount() {
-    console.log("Mount");
-    console.log(this.props.selectedUser);
-    this.setState({ isLoading: true }, this.fetchProfile);
-    console.log(this.state.isLoading);
+  async componentDidMount() {
+    this.setState({ isLoading: true });
+    await this.fetchProfile();
   }
 
   async fetchProfile() {
-    console.log("fetchProfile");
     const { name } = this.props.match.params;
     await this.props.getUserByUsername(name);
 
@@ -56,15 +54,18 @@ class Profile extends Component {
         await this.props.getFollowers(this.props.selectedUser.id);
 
         // check if current user is following selected user
-        let isFollowing = false;
         const follow = this.props.follows.followers.find(
           (follower) =>
             // if select user has a follower with id == current user id
             follower.follower.id === this.props.auth.user.id
         );
 
+        let isFollowing = undefined;
+
         if (follow) {
           isFollowing = true;
+        } else {
+          isFollowing = false;
         }
 
         this.setState({
@@ -121,17 +122,20 @@ class Profile extends Component {
     await this.props.getUserByUsername(name);
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.selectedUser.id !== prevProps.selectedUser.id) {
-      console.log("Update: different user");
-      // this.fetchProfile();
+  async componentDidUpdate(prevProps) {
+    if (this.props.match.params && prevProps.match.params) {
+      if (this.props.match.params !== prevProps.match.params) {
+        await this.fetchProfile();
+      }
     }
   }
 
   render() {
     const { allowEdit, isFollowing, show, isLoading } = this.state;
 
-    console.log(isLoading, this.props.selectedUser, this.props.auth);
+    if (isLoading) {
+      return <Loader />;
+    }
 
     return (
       <div className="Profile">

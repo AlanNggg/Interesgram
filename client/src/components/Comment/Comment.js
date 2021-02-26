@@ -19,7 +19,7 @@ class Comment extends Component {
             <Card.Body className="px-0 py-2 d-flex">
               <Nav.Link
                 as={Link}
-                to={`/${comment.user.name}`}
+                to={`/profile/${comment.user.name}`}
                 className="px-0 pt-1"
               >
                 <img
@@ -30,7 +30,7 @@ class Comment extends Component {
               <div>
                 <Nav.Link
                   as={Link}
-                  to={`/${comment.user.name}`}
+                  to={`/profile/${comment.user.name}`}
                   className="px-0 pt-2"
                 >
                   <Card.Title className="text-sm-left m-0">

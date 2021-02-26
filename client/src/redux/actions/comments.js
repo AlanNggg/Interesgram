@@ -1,11 +1,11 @@
 import axios from "axios";
 import config from "../../config";
 import {
+  COMMENTS_LOADING,
   GET_POST_COMMENTS,
   GET_USER_COMMENTS,
   CREATE_COMMENT,
   DELETE_COMMENT,
-  GET_ERRORS,
 } from "../constants";
 import catchErrors from "./catchErrors";
 
@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true;
 
 export const getPostComments = (postId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: COMMENTS_LOADING });
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/posts/${postId}/comments`
     );
@@ -22,6 +23,7 @@ export const getPostComments = (postId) =>
 
 export const getUserComments = (userId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: COMMENTS_LOADING });
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/${userId}/comments`
     );

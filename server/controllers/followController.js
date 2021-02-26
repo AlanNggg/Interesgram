@@ -78,3 +78,36 @@ exports.removeFollow = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.followingOrNot = async (req, res, next) => {
+  try {
+    let filter = {};
+    if (req.params.userId) {
+      filter = { following: req.params.userId, follower: req.user.id };
+    } else {
+      const { following } = req.query;
+      if (!following) {
+        return next(new error("Please provide userId", 400));
+      }
+      filter = { following, follower: req.user.id };
+    }
+
+    const follow = await Follow.findOne(filter);
+
+    let isFollowing = undefined;
+    if (follow) {
+      isFollowing = true;
+    } else {
+      isFollowing = false;
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        isFollowing,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};

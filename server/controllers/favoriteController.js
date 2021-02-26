@@ -35,7 +35,7 @@ exports.favoriteOrNot = async (req, res, next) => {
     if (req.params.postId) {
       filter = { post: req.params.postId, user: req.user.id };
     } else {
-      const { post } = req.body;
+      const { post } = req.query;
       if (!post) {
         return next(new error("Please provide postId", 400));
       }

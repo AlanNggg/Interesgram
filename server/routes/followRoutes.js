@@ -14,6 +14,10 @@ router
   .post(authController.authorization, followController.addFollow);
 
 router
+  .route("/followingOrNot")
+  .get(authController.authorization, followController.followingOrNot);
+
+router
   .route("/:id")
   .delete(authController.authorization, followController.removeFollow);
 

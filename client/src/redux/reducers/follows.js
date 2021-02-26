@@ -1,4 +1,5 @@
 import {
+  FOLLOWS_LOADING,
   GET_FOLLOWINGS,
   GET_FOLLOWERS,
   ADD_FOLLOWING,
@@ -14,14 +15,21 @@ const initialState = {
 
 const follows = (state = initialState, action) => {
   switch (action.type) {
+    case FOLLOWS_LOADING:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case GET_FOLLOWINGS:
       return {
         ...state,
+        isLoading: false,
         followings: action.payload.data.follows,
       };
     case GET_FOLLOWERS:
       return {
         ...state,
+        isLoading: false,
         followers: action.payload.data.follows,
       };
     case ADD_FOLLOWING:

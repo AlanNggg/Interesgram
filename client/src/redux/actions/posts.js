@@ -1,6 +1,7 @@
 import axios from "axios";
 import config from "../../config";
 import {
+  POSTS_LOADING,
   GET_POSTS,
   GET_USER_POSTS,
   GET_POST,
@@ -19,6 +20,7 @@ axios.defaults.withCredentials = true;
 
 export const getPosts = () =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: POSTS_LOADING });
     const res = await axios.get(`${config.SERVER_URL}/api/v1/posts`);
 
     dispatch({ type: GET_POSTS, payload: res.data });
@@ -26,6 +28,7 @@ export const getPosts = () =>
 
 export const getPostsFromUser = (userId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: POSTS_LOADING });
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/${userId}/posts`
     );
@@ -35,6 +38,7 @@ export const getPostsFromUser = (userId) =>
 
 export const getPost = (postId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: POSTS_LOADING });
     const res = await axios.get(`${config.SERVER_URL}/api/v1/posts/${postId}`);
 
     dispatch({ type: GET_POST, payload: res.data });
@@ -58,6 +62,7 @@ export const deletePost = (postId) =>
 
 export const getFavorites = (userId) =>
   catchErrors(async (dispatch) => {
+    dispatch({ type: POSTS_LOADING });
     const res = await axios.get(
       `${config.SERVER_URL}/api/v1/users/${userId}/favorites`
     );

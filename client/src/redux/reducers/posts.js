@@ -1,4 +1,5 @@
 import {
+  POSTS_LOADING,
   GET_POST,
   GET_POSTS,
   GET_USER_POSTS,
@@ -21,16 +22,23 @@ const initialState = {
 
 const posts = (state = initialState, action) => {
   switch (action.type) {
+    case POSTS_LOADING:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case GET_POSTS:
     case GET_USER_POSTS:
       return {
         ...state,
+        isLoading: false,
         posts: action.payload.data.posts,
       };
 
     case GET_POST:
       return {
         ...state,
+        isLoading: false,
         selectedPost: action.payload.data.post,
       };
 

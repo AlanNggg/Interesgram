@@ -28,7 +28,7 @@ class Post extends Component {
     const { post } = this.props;
     // check current user liked it or not
     const res = await axios.get(
-      `${config.SERVER_URL}/api/v1/posts/${post.id}/favorites/favoriteOrNot`
+      `${config.SERVER_URL}/api/v1/posts/${post.id}/favorites/favoriteOrNot?`
     );
     const { isFavorite } = res.data.data;
     this.setState({ isFavorite });
@@ -68,7 +68,11 @@ class Post extends Component {
       <div className="Post">
         <Card>
           <Card.Body>
-            <Nav.Link as={Link} to={`/${post.author.name}`} className="px-0">
+            <Nav.Link
+              as={Link}
+              to={`/profile/${post.author.name}`}
+              className="px-0"
+            >
               <Card.Title className="text-sm-left">
                 <img
                   src={`/img/users/${post.author.avator}`}
